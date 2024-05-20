@@ -12,6 +12,8 @@ public class MessageConstant {
     public static final String NAME_OCCUPANCY = "昵称被占用";
     public static final String ACCOUNT_OCCUPANCY = "账号被占用";
 
+    public static final String SINGER_NAME_OCCUPANCY = "歌手名已被占用";
+
     public static final String UNKNOWN_ERROR = "未知错误";
 
     public static final String UPLOAD_FAILED = "文件上传失败";

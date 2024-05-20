@@ -1,5 +1,7 @@
 package com.distance0.imusic.mapper;
 
+import com.distance0.imusic.entity.Album;
+import com.distance0.imusic.entity.Music;
 import org.apache.ibatis.annotations.Mapper;
 
 /**
@@ -9,4 +11,16 @@ import org.apache.ibatis.annotations.Mapper;
  */
 @Mapper
 public interface AlbumMapper {
+    /**
+     * 添加专辑
+     * @param album
+     */
+    void insert(Album album);
+
+    /**
+     * 获取专辑
+     * @param album
+     * @return
+     */
+    Album getAlbumByAlbum(Album album);
 }

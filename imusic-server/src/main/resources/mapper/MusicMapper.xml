@@ -2,4 +2,38 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.distance0.imusic.mapper.MusicMapper">
 
+    <insert id="insert">
+        insert into music (name, album_id, singer_id, audio, count, sort, lyric, create_time) VALUES
+            (#{name},#{albumId},#{singerId},#{audio},#{count},#{sort},#{lyric},#{createTime})
+    </insert>
+
+    <select id="getMusicByMusic" resultType="com.distance0.imusic.entity.Music">
+        select id, name, album_id, singer_id, audio, count, sort, lyric, create_time from music
+            <where>
+                <if test="id != null">
+                    id = #{id}
+                </if>
+                <if test="name != null">
+                    and name = #{name}
+                </if>
+                <if test="albumId != null">
+                    and album_id = #{albumId}
+                </if>
+                <if test="singerId != null">
+                    and singer_id = #{singerId}
+                </if>
+                <if test="audio != null">
+                    and audio = #{audio}
+                </if>
+                <if test="count != null">
+                    and count = #{count}
+                </if>
+                <if test="sort != null">
+                    and sort = #{sort}
+                </if>
+                <if test="createTime != null">
+                    and create_time = #{createTime}
+                </if>
+            </where>
+    </select>
 </mapper>

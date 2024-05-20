@@ -2,4 +2,31 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.distance0.imusic.mapper.AlbumMapper">
 
+    <insert id="insert">
+        insert into album (name, singer_id, image, description, release_time) VALUES
+            (#{name},#{singerId},#{image},#{description},#{releaseTime})
+    </insert>
+    <select id="getAlbumByAlbum" resultType="com.distance0.imusic.entity.Album">
+        select id, name, singer_id, image, description, release_time from album
+            <where>
+                <if test="id != null">
+                    id = #{id}
+                </if>
+                <if test="name != null">
+                    and name = #{name}
+                </if>
+                <if test="singerId != null">
+                    and singer_id = #{singerid}
+                </if>
+                <if test="image != null">
+                    and image = #{image}
+                </if>
+                <if test="description != null">
+                    and description = #{description}
+                </if>
+                <if test="release_time != null">
+                    and releaseTime = #{releaseTime}
+                </if>
+            </where>
+    </select>
 </mapper>

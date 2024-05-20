@@ -1,5 +1,6 @@
 package com.distance0.imusic.mapper;
 
+import com.distance0.imusic.entity.Music;
 import org.apache.ibatis.annotations.Mapper;
 
 /**
@@ -9,5 +10,16 @@ import org.apache.ibatis.annotations.Mapper;
  */
 @Mapper
 public interface MusicMapper {
+    /**
+     * 添加歌手
+     * @param music
+     */
+    void insert(Music music);
 
+    /**
+     * 获取歌手
+     * @param music
+     * @return
+     */
+    Music getMusicByMusic(Music music);
 }
