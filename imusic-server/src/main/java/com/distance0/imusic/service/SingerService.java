@@ -5,6 +5,8 @@ import com.distance0.imusic.dto.SingerSaveDto;
 import com.distance0.imusic.entity.Singer;
 import com.distance0.imusic.result.PageResult;
 
+import java.util.List;
+
 /**
  * @author: XiangJing
  * @date: 2024/5/20 下午1:24
@@ -25,4 +27,12 @@ public interface SingerService {
      * @return
      */
     void save(SingerSaveDto dto);
+
+    /**
+     * 修改状态
+     * @param status
+     * @param id
+     * @return
+     */
+    void changeStatus(Integer status, List<Long> id);
 }

@@ -6,7 +6,6 @@ import com.distance0.imusic.vo.SingerVo;
 import com.github.pagehelper.Page;
 import org.apache.ibatis.annotations.Mapper;
 
-import java.util.List;
 
 /**
  * @author: XiangJing
@@ -35,4 +34,10 @@ public interface SingerMapper {
      * @return
      */
     Page<SingerVo> pageQuery(SingerPageDto dto);
+
+    /**
+     * 修改歌手
+     * @param singer
+     */
+    void updateSinger(Singer singer);
 }

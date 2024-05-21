@@ -7,7 +7,7 @@
             (#{name},#{albumId},#{singerId},#{audio},#{count},#{sort},#{lyric},#{createTime})
     </insert>
 
-    <select id="getMusicByMusic" resultType="com.distance0.imusic.entity.Music">
+    <select id="getMusic" resultType="com.distance0.imusic.entity.Music">
         select id, name, album_id, singer_id, audio, count, sort, lyric, create_time from music
             <where>
                 <if test="id != null">
@@ -36,4 +36,10 @@
                 </if>
             </where>
     </select>
+<!--    分页-->
+    <select id="pageQuery" resultType="com.distance0.imusic.entity.Music">
+        select id, name, album_id, singer_id, audio, count, sort, lyric, create_time from music
+    </select>
+
+
 </mapper>

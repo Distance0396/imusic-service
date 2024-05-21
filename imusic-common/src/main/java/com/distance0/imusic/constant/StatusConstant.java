@@ -6,6 +6,6 @@ package com.distance0.imusic.constant;
  * @description:
  */
 public class StatusConstant {
-    public static final Integer DISABLE = 0;
+    public static final Integer DISABLE = 2;
     public static final Integer ENABLE = 1;
 }

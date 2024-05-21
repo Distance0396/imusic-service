@@ -11,6 +11,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 /**
  * @author: XiangJing
  * @date: 2024/5/20 下午1:25
@@ -35,7 +37,6 @@ public class SingerController {
     public R<PageResult> page(SingerPageDto dto){
         log.info("歌手分页查询：{}",dto);
         PageResult result = singerService.page(dto);
-        log.info("返回结果：{}",result);
         return R.success(result);
     }
 
@@ -46,16 +47,24 @@ public class SingerController {
      */
     @ApiOperation("添加歌手")
     @PostMapping("/save")
-    public R save(SingerSaveDto dto){
+    public R save(@RequestBody SingerSaveDto dto){
         log.info("添加歌手:{}",dto);
         singerService.save(dto);
         return R.success();
     }
 
+    /**
+     * 修改状态
+     * @param status
+     * @param id
+     * @return
+     */
+    @PutMapping("/{status}")
+    @ApiOperation("修改状态")
+    public R changeStatus(@PathVariable Integer status, @RequestParam List<Long> id) {
+        log.info("修改歌手状态：{},{}", status, id);
+        singerService.changeStatus(status, id);
+        return R.success();
+    }
 
-
-//    @PostMapping("/insert")
-//    public R insert(@RequestBody){
-//        log.info("添加歌手：{}",);
-//    }
 }

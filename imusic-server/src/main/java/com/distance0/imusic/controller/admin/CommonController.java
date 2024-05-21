@@ -48,4 +48,23 @@ public class CommonController {
 
         return R.error(MessageConstant.UPLOAD_FAILED);
     }
+
+    @PostMapping("/upload/audio")
+    @ApiOperation("音频上传")
+    public R<String> uploadAudio(@RequestPart("file") MultipartFile file){
+        log.info("文件上传：{}",file);
+
+        try {
+            String originalFilename = file.getOriginalFilename();
+            String substring = originalFilename.substring(originalFilename.lastIndexOf("."));
+            String fileName = UUID.randomUUID().toString() + substring;
+            String upload = aliOssUtil.upload(file.getBytes(), "music/audio"+fileName);
+            log.info(upload);
+            return R.success(upload);
+        } catch (Exception e) {
+            log.error("文件上传失败：{}", e.getMessage());
+        }
+
+        return R.error(MessageConstant.UPLOAD_FAILED);
+    }
 }

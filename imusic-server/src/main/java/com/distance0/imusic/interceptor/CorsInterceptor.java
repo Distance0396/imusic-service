@@ -1,5 +1,7 @@
 package com.distance0.imusic.interceptor;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.HandlerInterceptor;
 
@@ -14,9 +16,10 @@ import javax.servlet.http.HttpServletResponse;
 @Configuration
 public class CorsInterceptor implements HandlerInterceptor{
 
+    private static final Logger log = LoggerFactory.getLogger(CorsInterceptor.class);
+
     @Override
-    public boolean preHandle(
-            HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         response.addHeader("Access-Control-Allow-Origin", "*");
         if ("OPTIONS".equals(request.getMethod())) {
             return true;

@@ -5,9 +5,9 @@
 <!--    添加歌手-->
     <insert id="insert">
         insert into  singer (name, avatar, type, status, description, create_time) VALUES
-            (#{name},#{avatar},#{type},#{status},#{description},#{create_time})
+            (#{name},#{avatar},#{type},#{status},#{description},#{createTime})
     </insert>
-<!--    查询歌手-->
+    <!--    查询歌手-->
     <select id="getSinger" resultType="com.distance0.imusic.entity.Singer">
         select id, name, avatar, type, status, description, create_time from singer
             <where>
@@ -44,6 +44,33 @@
             </where>
         order by id desc
     </select>
+
+<!--    修改歌手-->
+    <update id="updateSinger">
+        update singer
+            <set>
+                <if test="name != null">
+                    name = #{name},
+                </if>
+                <if test="type != null">
+                    type = #{type},
+                </if>
+                <if test="avatar != null">
+                    avatar = #{avatar},
+                </if>
+                <if test="status != null">
+                    status = #{status},
+                </if>
+                <if test="description != null">
+                    description = #{description}
+                </if>
+                <if test="createTime != null">
+                    create_time = #{createTime}
+                </if>
+            </set>
+        where id = #{id}
+    </update>
+
 
 
 </mapper>
