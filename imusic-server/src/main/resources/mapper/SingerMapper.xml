@@ -42,7 +42,7 @@
                     and status = #{status}
                 </if>
             </where>
-        order by id desc
+#         order by id desc
     </select>
 
 <!--    修改歌手-->

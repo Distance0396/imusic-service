@@ -5,9 +5,12 @@ import com.distance0.imusic.constant.StatusConstant;
 import com.distance0.imusic.constant.TypeConstant;
 import com.distance0.imusic.dto.SingerPageDto;
 import com.distance0.imusic.dto.SingerSaveDto;
+import com.distance0.imusic.entity.Album;
 import com.distance0.imusic.entity.Singer;
+import com.distance0.imusic.exception.FindNullException;
 import com.distance0.imusic.exception.SingerNameOccupancyException;
 import com.distance0.imusic.exception.StatusException;
+import com.distance0.imusic.mapper.AlbumMapper;
 import com.distance0.imusic.mapper.SingerMapper;
 import com.distance0.imusic.result.PageResult;
 import com.distance0.imusic.result.R;
@@ -36,9 +39,11 @@ import java.util.List;
 @Service
 public class SingerServiceImpl implements SingerService {
 
-    private static final Logger log = LoggerFactory.getLogger(SingerServiceImpl.class);
     @Autowired
     private SingerMapper singerMapper;
+
+    @Autowired
+    private AlbumMapper albumMapper;
 
     /**
      * 歌手分页查询
@@ -64,14 +69,16 @@ public class SingerServiceImpl implements SingerService {
                 .build();
         //先判断数据是否重复
         Singer singer = singerMapper.getSinger(build);
-        if (singer != null){
-            throw new SingerNameOccupancyException(MessageConstant.SINGER_NAME_OCCUPANCY);
+
+        if (singer == null){
+            BeanUtils.copyProperties(dto, build);
+            build.setStatus(1);
+            build.setCreateTime(LocalDateTime.now());
+            singerMapper.insert(build);
         }
 
-        BeanUtils.copyProperties(dto, build);
-        build.setStatus(1);
-        build.setCreateTime(LocalDateTime.now());
-        singerMapper.insert(build);
+        throw new SingerNameOccupancyException(MessageConstant.SINGER_NAME_OCCUPANCY);
+
     }
 
     /**
@@ -98,6 +105,27 @@ public class SingerServiceImpl implements SingerService {
             singerMapper.updateSinger(singer);
         }
 
+    }
+
+    /**
+     * 根据歌手名查询专辑
+     * @param name
+     * @return
+     */
+    @Override
+    public List<Album> findAlbumBySingerName(String name) {
+
+        Singer build = Singer.builder()
+                .name(name)
+                .build();
+        Singer singer = singerMapper.getSinger(build);
+        if (singer == null){
+            throw new FindNullException(MessageConstant.FIND_NULL);
+        }
+        Album album = Album.builder()
+                .singerId(singer.getId()).build();
+
+        return albumMapper.getAlbumList(album);
     }
 
 

@@ -5,16 +5,14 @@ import lombok.Data;
 
 /**
  * @author: XiangJing
- * @date: 2024/5/22 上午12:44
+ * @date: 2024/5/23 上午9:28
  * @description:
  */
 @Data
-public class MusicPageDto {
-    @ApiModelProperty("音乐名字")
+public class AlbumPageDto {
+    @ApiModelProperty("专辑名字")
     private String name;
-    @ApiModelProperty("专辑名")
-    private String albumName;
-    @ApiModelProperty("歌手名")
+    @ApiModelProperty("歌手名称")
     private String singerName;
     @ApiModelProperty("状态")
     private Integer status;

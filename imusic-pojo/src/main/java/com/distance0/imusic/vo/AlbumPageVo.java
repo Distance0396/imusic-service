@@ -1,4 +1,4 @@
-package com.distance0.imusic.entity;
+package com.distance0.imusic.vo;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -10,17 +10,17 @@ import java.time.LocalDateTime;
 
 /**
  * @author: XiangJing
- * @date: 2024/5/20 下午3:09
+ * @date: 2024/5/23 上午8:58
  * @description:
  */
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Album implements Serializable {
+public class AlbumPageVo implements Serializable {
     private Long id;
     private String name;
-    private Long singerId;
+    private String singerName;
     private String image;
     private String description;
     private Integer status;

@@ -2,6 +2,7 @@ package com.distance0.imusic.service;
 
 import com.distance0.imusic.dto.SingerPageDto;
 import com.distance0.imusic.dto.SingerSaveDto;
+import com.distance0.imusic.entity.Album;
 import com.distance0.imusic.entity.Singer;
 import com.distance0.imusic.result.PageResult;
 
@@ -35,4 +36,11 @@ public interface SingerService {
      * @return
      */
     void changeStatus(Integer status, List<Long> id);
+
+    /**
+     * 根据歌手名查询专辑
+     * @param name
+     * @return
+     */
+    List<Album> findAlbumBySingerName(String name);
 }

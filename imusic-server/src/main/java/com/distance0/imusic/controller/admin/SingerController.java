@@ -2,6 +2,7 @@ package com.distance0.imusic.controller.admin;
 
 import com.distance0.imusic.dto.SingerPageDto;
 import com.distance0.imusic.dto.SingerSaveDto;
+import com.distance0.imusic.entity.Album;
 import com.distance0.imusic.result.PageResult;
 import com.distance0.imusic.result.R;
 import com.distance0.imusic.service.SingerService;
@@ -67,4 +68,16 @@ public class SingerController {
         return R.success();
     }
 
+    /**
+     * 根据歌手名查询专辑
+     * @param name
+     * @return
+     */
+    @ApiOperation("根据歌手名查询专辑")
+    @GetMapping("/album")
+    public R findAlbumBySingerName(@RequestParam String name) {
+        log.info("根据歌手名查询专辑：{}", name);
+        List<Album> albumList = singerService.findAlbumBySingerName(name);
+        return R.success(albumList);
+    }
 }

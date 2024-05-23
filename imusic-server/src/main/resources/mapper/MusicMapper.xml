@@ -3,24 +3,30 @@
 <mapper namespace="com.distance0.imusic.mapper.MusicMapper">
 
     <insert id="insert">
-        insert into music (name, album_id, singer_id, audio, count, sort, lyric, create_time) VALUES
-            (#{name},#{albumId},#{singerId},#{audio},#{count},#{sort},#{lyric},#{createTime})
+        insert into music (name, album_id, singer_id, album_name, singer_name, audio, count, sort, lyric, create_time, status, release_time) VALUES
+            (#{name},#{albumId},#{singerId},#{albumName},#{singerName},#{audio},#{count},#{sort},#{lyric},#{createTime}, #{status},#{releaseTime})
     </insert>
 
     <select id="getMusic" resultType="com.distance0.imusic.entity.Music">
-        select id, name, album_id, singer_id, audio, count, sort, lyric, create_time from music
+        select id, name, album_id, singer_id, album_name, singer_name, audio, count, sort, lyric, create_time, status, releaseTime from music
             <where>
                 <if test="id != null">
                     id = #{id}
                 </if>
                 <if test="name != null">
-                    and name = #{name}
+                    and name like concat('%',#{name},'%')
                 </if>
                 <if test="albumId != null">
                     and album_id = #{albumId}
                 </if>
                 <if test="singerId != null">
                     and singer_id = #{singerId}
+                </if>
+                <if test="albumName != null">
+                    and album_name like concat('%',#{albumName},'%')
+                </if>
+                <if test="singerName != null">
+                    and singer_name like concat('%',#{singerName},'%')
                 </if>
                 <if test="audio != null">
                     and audio = #{audio}
@@ -34,12 +40,71 @@
                 <if test="createTime != null">
                     and create_time = #{createTime}
                 </if>
+                <if test="status != null">
+                    and status = #{status}
+                </if>
+                <if test="releaseTime != null">
+                    and release_time = #{releaseTime}
+                </if>
             </where>
     </select>
 <!--    分页-->
     <select id="pageQuery" resultType="com.distance0.imusic.entity.Music">
-        select id, name, album_id, singer_id, audio, count, sort, lyric, create_time from music
+        select id, name, album_id, singer_id, album_name, singer_name, audio, count, sort, lyric, create_time, status, release_time from music
+            <where>
+                <if test="name != null">
+                    name like concat('%',#{name},'%')
+                </if>
+                <if test="albumName != null">
+                    and album_name like concat('%',#{albumName},'%')
+                </if>
+                <if test="singerName != null">
+                    and singer_name like concat('%',#{singerName},'%')
+                </if>
+                <if test="status != null">
+                    and status = #{status}
+                </if>
+            </where>
     </select>
-
+<!--    修改状态-->
+    <update id="updateSinger">
+        update music
+            <set>
+                <if test="id != null">
+                    id = #{id},
+                </if>
+                <if test="name != null">
+                     name = #{name},
+                </if>
+                <if test="albumId != null">
+                     album_id = #{albumId},
+                </if>
+                <if test="singerId != null">
+                     singer_id = #{singerId},
+                </if>
+                <if test="albumName != null">
+                     album_name = #{albumName},
+                </if>
+                <if test="singerName != null">
+                     singer_name = #{singerName},
+                </if>
+                <if test="audio != null">
+                     audio = #{audio},
+                </if>
+                <if test="count != null">
+                     count = #{count},
+                </if>
+                <if test="sort != null">
+                     sort = #{sort},
+                </if>
+                <if test="releaseTime != null">
+                    release_time = #{releaseTime},
+                </if>
+                <if test="status != null">
+                     status = #{status}
+                </if>
+            </set>
+        where id = #{id}
+    </update>
 
 </mapper>

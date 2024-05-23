@@ -2,7 +2,12 @@ package com.distance0.imusic.mapper;
 
 import com.distance0.imusic.entity.Album;
 import com.distance0.imusic.entity.Music;
+import com.github.pagehelper.Page;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Select;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
  * @author: XiangJing
@@ -23,4 +28,14 @@ public interface AlbumMapper {
      * @return
      */
     Album getAlbumByAlbum(Album album);
+
+
+    Page<Album> pageQuery(Album album);
+
+    /**
+     * 查找专辑数组
+     * @param album
+     * @return
+     */
+    List<Album> getAlbumList(Album album);
 }

@@ -15,6 +15,8 @@ public class MessageConstant {
     public static final String SINGER_NAME_OCCUPANCY = "歌手名已被占用";
     public static final String STATUS_EXCEPTION = "状态异常";
 
+    public static final String FIND_NULL = "找不到数据";
+    public static final String FIND_SINGER_NULL = "没有这个歌手";
     public static final String UNKNOWN_ERROR = "未知错误";
 
     public static final String UPLOAD_FAILED = "文件上传失败";

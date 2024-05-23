@@ -1,5 +1,6 @@
 package com.distance0.imusic.entity;
 
+import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -22,10 +23,14 @@ public class Music implements Serializable {
     private String name;
     private Long albumId;
     private Long singerId;
+    private String albumName;
+    private String singerName;
     private String audio;
     private Integer count;
     private Integer sort;
     private String lyric;
     private LocalDateTime createTime;
+    private LocalDateTime releaseTime;
+    private Integer status;
     private static final long serialVersionUID = 1L;
 }

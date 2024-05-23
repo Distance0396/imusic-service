@@ -31,4 +31,10 @@ public interface MusicMapper {
      * @return
      */
     Page<Music> pageQuery(MusicPageDto dto);
+
+    /**
+     * 修改状态
+     * @param music
+     */
+    void updateSinger(Music music);
 }

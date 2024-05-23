@@ -1,6 +1,8 @@
 package com.distance0.imusic.controller.admin;
 
 import com.distance0.imusic.dto.MusicPageDto;
+import com.distance0.imusic.dto.MusicSaveDto;
+import com.distance0.imusic.dto.SingerSaveDto;
 import com.distance0.imusic.result.PageResult;
 import com.distance0.imusic.result.R;
 import com.distance0.imusic.service.MusicService;
@@ -8,10 +10,9 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * @author: XiangJing
@@ -37,5 +38,32 @@ public class MusicController {
         log.info("音乐分页查询：{}",dto);
         PageResult result = musicService.page(dto);
         return R.success(result);
+    }
+
+    /**
+     * 添加音乐
+     * @param dto
+     * @return
+     */
+    @ApiOperation("添加音乐")
+    @PostMapping("/save")
+    public R save(@RequestBody MusicSaveDto dto){
+        log.info("添加音乐:{}",dto);
+        musicService.save(dto);
+        return R.success();
+    }
+
+    /**
+     * 修改状态
+     * @param status
+     * @param id
+     * @return
+     */
+    @PutMapping("/{status}")
+    @ApiOperation("修改状态")
+    public R changeStatus(@PathVariable Integer status, @RequestParam List<Long> id) {
+        log.info("修改歌手状态：{},{}", status, id);
+        musicService.changeStatus(status, id);
+        return R.success();
     }
 }

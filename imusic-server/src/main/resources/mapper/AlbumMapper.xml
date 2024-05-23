@@ -3,11 +3,11 @@
 <mapper namespace="com.distance0.imusic.mapper.AlbumMapper">
 
     <insert id="insert">
-        insert into album (name, singer_id, image, description, release_time) VALUES
-            (#{name},#{singerId},#{image},#{description},#{releaseTime})
+        insert into album (name, singer_id, image, description, release_time, create_time, status) VALUES
+            (#{name},#{singerId},#{image},#{description},#{releaseTime},#{createTime},#{status})
     </insert>
     <select id="getAlbumByAlbum" resultType="com.distance0.imusic.entity.Album">
-        select id, name, singer_id, image, description, release_time from album
+        select id, name, singer_id, image, description, release_time, create_time, status from album
             <where>
                 <if test="id != null">
                     id = #{id}
@@ -24,8 +24,56 @@
                 <if test="description != null">
                     and description = #{description}
                 </if>
-                <if test="release_time != null">
-                    and releaseTime = #{releaseTime}
+                <if test="releaseTime != null">
+                    and release_time = #{releaseTime}
+                </if>
+                <if test="createTime != null">
+                    and create_time = #{createTime}
+                </if>
+                <if test="status != null">
+                    and status = #{status}
+                </if>
+            </where>
+    </select>
+<!--    查找专辑-->
+    <select id="getAlbumList" resultType="com.distance0.imusic.entity.Album">
+        select id, name, singer_id, image, description, release_time, create_time from album
+            <where>
+                <if test="id != null">
+                    id = #{id}
+                </if>
+                <if test="name != null">
+                    and name = #{name}
+                </if>
+                <if test="singerId != null">
+                    and singer_id = #{singerId}
+                </if>
+                <if test="image != null">
+                    and image = #{image}
+                </if>
+                <if test="description != null">
+                    and description = #{description}
+                </if>
+                <if test="releaseTime != null">
+                    and release_time = #{releaseTime}
+                </if>
+                <if test="createTime != null">
+                    and create_time = #{createTime}
+                </if>
+            </where>
+    </select>
+<!--    分页-->
+    <select id="pageQuery" resultType="com.distance0.imusic.entity.Album">
+        select id, name, singer_id, image, description, release_time, create_time, status from album
+            <where>
+                <if test="name != null">
+                    name like concat('%',#{name},'%')
+                </if>
+                <if test="singerId != null">
+                    and singer_id = #{singerId}
+                </if>
+                <if test="status != null">
+                    and status = #{status}
                 </if>
             </where>
     </select>
