@@ -6,6 +6,27 @@
         insert into album (name, singer_id, image, description, release_time, create_time, status) VALUES
             (#{name},#{singerId},#{image},#{description},#{releaseTime},#{createTime},#{status})
     </insert>
+    <update id="update">
+        update album
+            <set>
+                <if test="name != null">
+                    name = #{name},
+                </if>
+                <if test="image != null">
+                    image = #{image},
+                </if>
+                <if test="description != null">
+                    description = #{description},
+                </if>
+                <if test="status != null">
+                    status = #{status},
+                </if>
+                <if test="releaseTime != null">
+                    release_time = #{releaseTime}
+                </if>
+            </set>
+        where id = #{id}
+    </update>
     <select id="getAlbumByAlbum" resultType="com.distance0.imusic.entity.Album">
         select id, name, singer_id, image, description, release_time, create_time, status from album
             <where>

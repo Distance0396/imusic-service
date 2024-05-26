@@ -3,16 +3,19 @@ package com.distance0.imusic.service.impl;
 import com.distance0.imusic.constant.MessageConstant;
 import com.distance0.imusic.constant.StatusConstant;
 import com.distance0.imusic.dto.AlbumPageDto;
-import com.distance0.imusic.dto.AlbumSaveDto;
-import com.distance0.imusic.dto.MusicSaveDto;
+import com.distance0.imusic.dto.AlbumDto;
 import com.distance0.imusic.entity.Album;
+import com.distance0.imusic.entity.Music;
 import com.distance0.imusic.entity.Singer;
 import com.distance0.imusic.exception.FindNullException;
-import com.distance0.imusic.exception.NameOccupancyException;
+import com.distance0.imusic.exception.StatusException;
+import com.distance0.imusic.exception.UnknownErrorException;
 import com.distance0.imusic.mapper.AlbumMapper;
+import com.distance0.imusic.mapper.MusicMapper;
 import com.distance0.imusic.mapper.SingerMapper;
 import com.distance0.imusic.result.PageResult;
 import com.distance0.imusic.service.AlbumService;
+import com.distance0.imusic.vo.AlbumVo;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import org.springframework.beans.BeanUtils;
@@ -34,6 +37,9 @@ public class AlbumServiceImpl implements AlbumService {
 
     @Autowired
     private SingerMapper singerMapper;
+
+    @Autowired
+    private MusicMapper musicMapper;
 
     /**
      * 专辑分页
@@ -71,7 +77,7 @@ public class AlbumServiceImpl implements AlbumService {
      * @return
      */
     @Override
-    public void save(AlbumSaveDto dto) {
+    public void save(AlbumDto dto) {
         // 根据歌手名查找，没有抛出异常并终止方法运行
         Singer build = Singer.builder()
                 .name(dto.getSingerName()).build();
@@ -102,6 +108,72 @@ public class AlbumServiceImpl implements AlbumService {
      */
     @Override
     public void changeStatus(Integer status, List<Long> id) {
+        int newStatus;
+        if (status.equals(StatusConstant.DISABLE)){
+            newStatus = StatusConstant.DISABLE;
+        }else if (status.equals(StatusConstant.ENABLE)){
+            newStatus = StatusConstant.ENABLE;
+        } else {
+            throw new StatusException(MessageConstant.STATUS_EXCEPTION);
+        }
 
+        for(Long x : id){
+            Album album = new Album();
+            album.setId(x);
+            album.setStatus(newStatus);
+            albumMapper.update(album);
+        }
+    }
+
+    /**
+     * 根据id查询专辑
+     * @param id
+     * @return
+     */
+    @Override
+    public AlbumVo findById(Long id) {
+        // 根据id查询专辑
+        Album album = Album.builder().id(id).build();
+        Album albumByAlbum = albumMapper.getAlbumByAlbum(album);
+
+        // 为空就抛出异常
+        if (albumByAlbum != null){
+            // 根据歌手id查询歌手名字
+            Singer singer = Singer.builder().id(albumByAlbum.getSingerId()).build();
+            Singer singer1 = singerMapper.getSinger(singer);
+            // 查询专辑中的音乐
+            Music musicBuilder = Music
+                    .builder()
+                    .albumId(albumByAlbum.getId())
+                    .build();
+            List<Music> musicList = musicMapper.getMusicList(musicBuilder);
+
+            // 赋值给返回对象
+            AlbumVo build = AlbumVo
+                    .builder()
+                    .singerName(singer1.getName())
+                    .MusicList(musicList)
+                    .build();
+            BeanUtils.copyProperties(albumByAlbum, build);
+
+            return build;
+        }
+        throw new FindNullException(MessageConstant.FIND_NULL);
+    }
+
+    /**
+     * 修改专辑
+     * @param dto
+     * @return
+     */
+    @Override
+    public void update(AlbumDto dto) {
+        if (dto.getId() != null){
+            Album album = new Album();
+            BeanUtils.copyProperties(dto, album);
+            albumMapper.update(album);
+            return;
+        }
+        throw new UnknownErrorException(MessageConstant.UNKNOWN_ERROR);
     }
 }

@@ -1,11 +1,11 @@
 package com.distance0.imusic.controller.admin;
 
 import com.distance0.imusic.dto.AlbumPageDto;
-import com.distance0.imusic.dto.AlbumSaveDto;
-import com.distance0.imusic.dto.MusicSaveDto;
+import com.distance0.imusic.dto.AlbumDto;
 import com.distance0.imusic.result.PageResult;
 import com.distance0.imusic.result.R;
 import com.distance0.imusic.service.AlbumService;
+import com.distance0.imusic.vo.AlbumVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
@@ -47,8 +47,8 @@ public class AlbumController {
      */
     @ApiOperation("添加专辑")
     @PostMapping("/save")
-    public R save(@RequestBody AlbumSaveDto dto){
-        log.info("添加音乐:{}",dto);
+    public R save(@RequestBody AlbumDto dto){
+        log.info("添加专辑:{}",dto);
         albumService.save(dto);
         return R.success();
     }
@@ -64,6 +64,32 @@ public class AlbumController {
     public R changeStatus(@PathVariable Integer status, @RequestParam List<Long> id) {
         log.info("修改歌手状态：{},{}", status, id);
         albumService.changeStatus(status, id);
+        return R.success();
+    }
+
+    /**
+     * 根据id查询专辑
+     * @param id
+     * @return
+     */
+    @GetMapping("/{id}")
+    @ApiOperation("根据id查询专辑")
+    public R<AlbumVo> findById(@PathVariable Long id) {
+        log.info("根据id查询专辑：{}",id);
+        AlbumVo albumVo = albumService.findById(id);
+        return R.success(albumVo);
+    }
+
+    /**
+     * 修改专辑
+     * @param dto
+     * @return
+     */
+    @PutMapping("/update")
+    @ApiOperation("修改专辑")
+    public R update(@RequestBody AlbumDto dto){
+        log.info("修改对象：{}",dto);
+        albumService.update(dto);
         return R.success();
     }
 }

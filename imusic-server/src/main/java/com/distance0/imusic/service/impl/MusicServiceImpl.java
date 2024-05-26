@@ -3,7 +3,7 @@ package com.distance0.imusic.service.impl;
 import com.distance0.imusic.constant.MessageConstant;
 import com.distance0.imusic.constant.StatusConstant;
 import com.distance0.imusic.dto.MusicPageDto;
-import com.distance0.imusic.dto.MusicSaveDto;
+import com.distance0.imusic.dto.MusicDto;
 import com.distance0.imusic.entity.Album;
 import com.distance0.imusic.entity.Music;
 import com.distance0.imusic.entity.Singer;
@@ -14,13 +14,12 @@ import com.distance0.imusic.mapper.MusicMapper;
 import com.distance0.imusic.mapper.SingerMapper;
 import com.distance0.imusic.result.PageResult;
 import com.distance0.imusic.service.MusicService;
-import com.distance0.imusic.vo.SingerVo;
+import com.distance0.imusic.vo.MusicVo;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.GetMapping;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -74,7 +73,7 @@ public class MusicServiceImpl implements MusicService {
             Music music = new Music();
             music.setId(x);
             music.setStatus(newStatus);
-            musicMapper.updateSinger(music);
+            musicMapper.update(music);
         }
     }
 
@@ -84,7 +83,7 @@ public class MusicServiceImpl implements MusicService {
      * @return
      */
     @Override
-    public void save(MusicSaveDto dto) {
+    public void save(MusicDto dto) {
         Singer build = Singer.builder()
                 .name(dto.getSingerName())
                 .build();
@@ -110,4 +109,44 @@ public class MusicServiceImpl implements MusicService {
         throw new FindNullException(MessageConstant.FIND_SINGER_NULL);
 
     }
+
+    /**
+     * 根据id查询歌曲
+     * @param id
+     * @return
+     */
+    @Override
+    public MusicVo findMusicById(Long id) {
+        Music build = Music.builder().id(id).build();
+        Music music = musicMapper.getMusic(build);
+
+        if (music != null){
+            MusicVo vo = new MusicVo();
+            BeanUtils.copyProperties(music, vo);
+            return vo;
+        }
+        throw new FindNullException(MessageConstant.MUSIC_NOT_FIND);
+    }
+
+    /**
+     * 修改音乐
+     * @param dto
+     * @return
+     */
+    @Override
+    public void update(MusicDto dto) {
+        Music music = new Music();
+        BeanUtils.copyProperties(dto, music);
+
+        if (dto.getAlbumId() == 0){
+            music.setAlbumId(null);
+            music.setSort(null);
+            music.setAlbumName(null);
+        }else {
+            music.setReleaseTime(null);
+        }
+
+        musicMapper.update(music);
+    }
+
 }

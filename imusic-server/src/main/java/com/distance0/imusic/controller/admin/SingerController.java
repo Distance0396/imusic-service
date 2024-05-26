@@ -1,8 +1,10 @@
 package com.distance0.imusic.controller.admin;
 
+import com.distance0.imusic.dto.SingerDto;
 import com.distance0.imusic.dto.SingerPageDto;
 import com.distance0.imusic.dto.SingerSaveDto;
 import com.distance0.imusic.entity.Album;
+import com.distance0.imusic.entity.Singer;
 import com.distance0.imusic.result.PageResult;
 import com.distance0.imusic.result.R;
 import com.distance0.imusic.service.SingerService;
@@ -79,5 +81,31 @@ public class SingerController {
         log.info("根据歌手名查询专辑：{}", name);
         List<Album> albumList = singerService.findAlbumBySingerName(name);
         return R.success(albumList);
+    }
+
+    /**
+     * 根据id查询歌手详情
+     * @param id
+     * @return
+     */
+    @GetMapping("/{id}")
+    @ApiOperation("根据id查询歌手详情")
+    public R<Singer> findMusicById(@PathVariable Long id){
+        log.info("根据id查询歌手详情：{}", id);
+        Singer singer = singerService.findMusicById(id);
+        return R.success(singer);
+    }
+
+    /**
+     * 修改歌手信息
+     * @param dto
+     * @return
+     */
+    @PutMapping("/")
+    @ApiOperation("修改歌手信息")
+    public R update(@RequestBody SingerDto dto) {
+        log.info("修改歌手信息：{}", dto);
+        singerService.update(dto);
+        return R.success();
     }
 }

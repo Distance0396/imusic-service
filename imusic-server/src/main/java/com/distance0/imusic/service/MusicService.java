@@ -1,8 +1,10 @@
 package com.distance0.imusic.service;
 
 import com.distance0.imusic.dto.MusicPageDto;
-import com.distance0.imusic.dto.MusicSaveDto;
+import com.distance0.imusic.dto.MusicDto;
+import com.distance0.imusic.entity.Music;
 import com.distance0.imusic.result.PageResult;
+import com.distance0.imusic.vo.MusicVo;
 
 import java.util.List;
 
@@ -32,5 +34,19 @@ public interface MusicService {
      * @param dto
      * @return
      */
-    void save(MusicSaveDto dto);
+    void save(MusicDto dto);
+
+    /**
+     * 修改音乐
+     * @param dto
+     * @return
+     */
+    void update(MusicDto dto);
+
+    /**
+     * 根据id查询歌曲
+     * @param id
+     * @return
+     */
+    MusicVo findMusicById(Long id);
 }

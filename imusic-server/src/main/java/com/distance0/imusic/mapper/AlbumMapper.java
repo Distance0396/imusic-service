@@ -38,4 +38,10 @@ public interface AlbumMapper {
      * @return
      */
     List<Album> getAlbumList(Album album);
+
+    /**
+     *
+     * @param album
+     */
+    void update(Album album);
 }

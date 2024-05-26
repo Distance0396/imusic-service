@@ -3,6 +3,7 @@ package com.distance0.imusic.service.impl;
 import com.distance0.imusic.constant.MessageConstant;
 import com.distance0.imusic.constant.StatusConstant;
 import com.distance0.imusic.constant.TypeConstant;
+import com.distance0.imusic.dto.SingerDto;
 import com.distance0.imusic.dto.SingerPageDto;
 import com.distance0.imusic.dto.SingerSaveDto;
 import com.distance0.imusic.entity.Album;
@@ -102,7 +103,7 @@ public class SingerServiceImpl implements SingerService {
             Singer singer = new Singer();
             singer.setId(x);
             singer.setStatus(newStatus);
-            singerMapper.updateSinger(singer);
+            singerMapper.update(singer);
         }
 
     }
@@ -126,6 +127,42 @@ public class SingerServiceImpl implements SingerService {
                 .singerId(singer.getId()).build();
 
         return albumMapper.getAlbumList(album);
+    }
+
+    /**
+     * 根据id查询歌手详情
+     * @param id
+     * @return
+     */
+    @Override
+    public Singer findMusicById(Long id) {
+        Singer build = Singer.builder().id(id).build();
+        Singer singer = singerMapper.getSinger(build);
+        if (singer != null){
+            return singer;
+        }
+
+        throw new FindNullException(MessageConstant.FIND_SINGER_NULL);
+    }
+
+    /**
+     * 修改歌手信息
+     * @param dto
+     * @return
+     */
+    @Override
+    public void update(SingerDto dto) {
+        Singer build = Singer.builder().name(dto.getName()).build();
+        Singer singer1 = singerMapper.getSinger(build);
+
+        if (singer1 != null){
+            Singer singer = new Singer();
+            BeanUtils.copyProperties(dto, singer);
+            singerMapper.update(singer);
+            return;
+        }
+
+        throw new SingerNameOccupancyException(MessageConstant.NAME_OCCUPANCY);
     }
 
 

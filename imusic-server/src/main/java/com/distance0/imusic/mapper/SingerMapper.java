@@ -39,5 +39,5 @@ public interface SingerMapper {
      * 修改歌手
      * @param singer
      */
-    void updateSinger(Singer singer);
+    void update(Singer singer);
 }

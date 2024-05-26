@@ -46,7 +46,7 @@
     </select>
 
 <!--    修改歌手-->
-    <update id="updateSinger">
+    <update id="update">
         update singer
             <set>
                 <if test="name != null">

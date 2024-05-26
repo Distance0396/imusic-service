@@ -58,7 +58,7 @@ public class CommonController {
             String originalFilename = file.getOriginalFilename();
             String substring = originalFilename.substring(originalFilename.lastIndexOf("."));
             String fileName = UUID.randomUUID().toString() + substring;
-            String upload = aliOssUtil.upload(file.getBytes(), "music/audio"+fileName);
+            String upload = aliOssUtil.upload(file.getBytes(), "music/audio/"+fileName);
             log.info(upload);
             return R.success(upload);
         } catch (Exception e) {

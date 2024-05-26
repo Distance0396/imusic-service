@@ -10,7 +10,8 @@ import java.time.LocalDateTime;
  * @description:
  */
 @Data
-public class MusicSaveDto {
+public class MusicDto {
+    private Long id;
     private String name;
     private Long albumId;
     private String singerName;

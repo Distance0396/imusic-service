@@ -8,7 +8,7 @@
     </insert>
 
     <select id="getMusic" resultType="com.distance0.imusic.entity.Music">
-        select id, name, album_id, singer_id, album_name, singer_name, audio, count, sort, lyric, create_time, status, releaseTime from music
+        select id, name, album_id, singer_id, album_name, singer_name, audio, count, sort, lyric, create_time, status, release_time from music
             <where>
                 <if test="id != null">
                     id = #{id}
@@ -66,8 +66,32 @@
                 </if>
             </where>
     </select>
-<!--    修改状态-->
-    <update id="updateSinger">
+<!--    获取音乐数组-->
+    <select id="getMusicList" resultType="com.distance0.imusic.entity.Music">
+        select id, name, album_name, singer_name, singer_id, album_id, audio, count, sort, lyric, create_time, status, release_time from music
+            <where>
+                <if test="name != null">
+                    name = #{name}
+                </if>
+                <if test="albumName != null">
+                    and album_name = #{albumName}
+                </if>
+                <if test="singerName != null">
+                    and singer_name = #{singerName}
+                </if>
+                <if test="singerId != null">
+                    and singer_id = #{singerId}
+                </if>
+                <if test="albumId != null">
+                    and album_id = #{albumId}
+                </if>
+                <if test="count != null">
+                    and count = #{count}
+                </if>
+            </where>
+    </select>
+<!--    修改音乐-->
+    <update id="update">
         update music
             <set>
                 <if test="id != null">
@@ -76,15 +100,11 @@
                 <if test="name != null">
                      name = #{name},
                 </if>
-                <if test="albumId != null">
-                     album_id = #{albumId},
-                </if>
+                album_id = #{albumId},
                 <if test="singerId != null">
                      singer_id = #{singerId},
                 </if>
-                <if test="albumName != null">
-                     album_name = #{albumName},
-                </if>
+                album_name = #{albumName},
                 <if test="singerName != null">
                      singer_name = #{singerName},
                 </if>
@@ -94,12 +114,8 @@
                 <if test="count != null">
                      count = #{count},
                 </if>
-                <if test="sort != null">
-                     sort = #{sort},
-                </if>
-                <if test="releaseTime != null">
-                    release_time = #{releaseTime},
-                </if>
+                sort = #{sort},
+                release_time = #{releaseTime},
                 <if test="status != null">
                      status = #{status}
                 </if>

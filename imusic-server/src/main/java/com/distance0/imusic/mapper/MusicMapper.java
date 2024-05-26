@@ -5,6 +5,8 @@ import com.distance0.imusic.entity.Music;
 import com.github.pagehelper.Page;
 import org.apache.ibatis.annotations.Mapper;
 
+import java.util.List;
+
 /**
  * @author: XiangJing
  * @date: 2024/5/20 下午1:32
@@ -36,5 +38,12 @@ public interface MusicMapper {
      * 修改状态
      * @param music
      */
-    void updateSinger(Music music);
+    void update(Music music);
+
+    /**
+     * 获取音乐数组
+     * @param music
+     * @return
+     */
+    List<Music> getMusicList(Music music);
 }
