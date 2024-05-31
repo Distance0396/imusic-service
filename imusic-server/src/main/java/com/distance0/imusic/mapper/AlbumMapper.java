@@ -2,6 +2,7 @@ package com.distance0.imusic.mapper;
 
 import com.distance0.imusic.entity.Album;
 import com.distance0.imusic.entity.Music;
+import com.distance0.imusic.vo.AlbumVo;
 import com.github.pagehelper.Page;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
@@ -30,6 +31,11 @@ public interface AlbumMapper {
     Album getAlbumByAlbum(Album album);
 
 
+    /**
+     * 专辑分页
+     * @param album
+     * @return
+     */
     Page<Album> pageQuery(Album album);
 
     /**
@@ -44,4 +50,11 @@ public interface AlbumMapper {
      * @param album
      */
     void update(Album album);
+
+    /**
+     * 获取随机专辑
+     * @return
+     */
+    @Select("select * from album where status = 1 order by RAND() LIMIT 20")
+    List<AlbumVo> getRandomAlbum();
 }

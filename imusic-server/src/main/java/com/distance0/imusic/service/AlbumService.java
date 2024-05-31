@@ -49,4 +49,25 @@ public interface AlbumService {
      * @return
      */
     void update(AlbumDto dto);
+
+    /**
+     * 获取随机专辑
+     *
+     * @return
+     */
+    List<AlbumVo> getRandomAlbum();
+
+    /**
+     * 根据歌手id查询专辑
+     * @param id
+     * @return
+     */
+    List<AlbumVo> getAlbumBySingerId(Long id);
+
+    /**
+     * 根据专辑id查询信息
+     * @param id
+     * @return
+     */
+    AlbumVo getAlbumById(Long id);
 }

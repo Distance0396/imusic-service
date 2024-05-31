@@ -5,6 +5,9 @@ import com.distance0.imusic.entity.Singer;
 import com.distance0.imusic.vo.SingerVo;
 import com.github.pagehelper.Page;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Select;
+
+import java.util.List;
 
 
 /**
@@ -40,4 +43,19 @@ public interface SingerMapper {
      * @param singer
      */
     void update(Singer singer);
+
+    /**
+     * 查询所有歌手
+     * @return
+     */
+    @Select("select * from singer where status = 1")
+    List<Singer> selectAll();
+
+    /**
+     * 随机获取歌手
+     * @return
+     */
+    @Select("select * from singer where status = 1 order by RAND() LIMIT 20")
+    List<Singer> getRandomSinger();
+
 }

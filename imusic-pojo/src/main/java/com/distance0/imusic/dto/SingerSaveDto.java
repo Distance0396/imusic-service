@@ -11,6 +11,8 @@ import lombok.Data;
 public class SingerSaveDto {
     private String name;
     private int type;
+    private String image;
+    private String language;
     private String avatar;
     private String description;
 }

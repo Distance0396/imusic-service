@@ -24,7 +24,7 @@ import java.util.List;
 @Slf4j
 @Api(tags = "歌手接口")
 @RestController
-@RequestMapping("/singer")
+@RequestMapping("/admin/singer")
 public class SingerController {
 
     @Autowired
@@ -92,7 +92,7 @@ public class SingerController {
     @ApiOperation("根据id查询歌手详情")
     public R<Singer> findMusicById(@PathVariable Long id){
         log.info("根据id查询歌手详情：{}", id);
-        Singer singer = singerService.findMusicById(id);
+        Singer singer = singerService.findSingerById(id);
         return R.success(singer);
     }
 

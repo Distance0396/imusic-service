@@ -2,35 +2,32 @@ package com.distance0.imusic.service.impl;
 
 import com.distance0.imusic.constant.MessageConstant;
 import com.distance0.imusic.constant.StatusConstant;
-import com.distance0.imusic.constant.TypeConstant;
 import com.distance0.imusic.dto.SingerDto;
 import com.distance0.imusic.dto.SingerPageDto;
 import com.distance0.imusic.dto.SingerSaveDto;
 import com.distance0.imusic.entity.Album;
+import com.distance0.imusic.entity.Music;
 import com.distance0.imusic.entity.Singer;
 import com.distance0.imusic.exception.FindNullException;
 import com.distance0.imusic.exception.SingerNameOccupancyException;
 import com.distance0.imusic.exception.StatusException;
 import com.distance0.imusic.mapper.AlbumMapper;
+import com.distance0.imusic.mapper.MusicMapper;
 import com.distance0.imusic.mapper.SingerMapper;
 import com.distance0.imusic.result.PageResult;
-import com.distance0.imusic.result.R;
 import com.distance0.imusic.service.SingerService;
+import com.distance0.imusic.vo.MusicDetailVo;
+import com.distance0.imusic.vo.SingerDetailVo;
 import com.distance0.imusic.vo.SingerVo;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
-import io.swagger.annotations.ApiOperation;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 
-import java.beans.Transient;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author: XiangJing
@@ -45,6 +42,9 @@ public class SingerServiceImpl implements SingerService {
 
     @Autowired
     private AlbumMapper albumMapper;
+
+    @Autowired
+    private MusicMapper musicMapper;
 
     /**
      * 歌手分页查询
@@ -131,13 +131,15 @@ public class SingerServiceImpl implements SingerService {
 
     /**
      * 根据id查询歌手详情
+     *
      * @param id
      * @return
      */
     @Override
-    public Singer findMusicById(Long id) {
+    public Singer findSingerById(Long id) {
         Singer build = Singer.builder().id(id).build();
         Singer singer = singerMapper.getSinger(build);
+
         if (singer != null){
             return singer;
         }
@@ -163,6 +165,65 @@ public class SingerServiceImpl implements SingerService {
         }
 
         throw new SingerNameOccupancyException(MessageConstant.NAME_OCCUPANCY);
+    }
+
+
+    /**
+     * 获取歌手数组
+     * @return
+     */
+    @Override
+    public List<Singer> getSingerList() {
+        return singerMapper.selectAll();
+    }
+
+    /**
+     * 随机获取歌手
+     * @return
+     */
+    @Override
+    public List<Singer> getRandomSinger() {
+        return singerMapper.getRandomSinger();
+    }
+
+    /**
+     * 根据id查找歌手详情(音乐列表)
+     * @param id
+     * @return
+     */
+    @Override
+    public SingerDetailVo findSingerDetailById(Long id) {
+        Singer singer = singerMapper.getSinger(Singer.builder().id(id).build());
+
+        if (singer != null){
+            List<Music> musicList = musicMapper.getMusicList(Music.builder().singerId(singer.getId()).build());
+            System.out.println("musicList:" + musicList);
+
+            List<MusicDetailVo> collect = musicList.stream().map(music -> {
+
+                Album albumByAlbum = null;
+               if (music.getAlbumId() != null){
+                   albumByAlbum = albumMapper.getAlbumByAlbum(Album.builder().id(music.getAlbumId()).build());
+               }
+
+                MusicDetailVo musicDetailVo = new MusicDetailVo();
+                BeanUtils.copyProperties(music, musicDetailVo);
+                if (albumByAlbum != null && albumByAlbum.getImage() != null) {
+                    musicDetailVo.setAlbumImage(albumByAlbum.getImage());
+                }
+
+                return musicDetailVo;
+            }).collect(Collectors.toList());
+
+            SingerDetailVo singerDetailVo = SingerDetailVo.builder()
+                    .musicList(collect)
+                    .build();
+            BeanUtils.copyProperties(singer, singerDetailVo);
+
+            return singerDetailVo;
+        }
+
+        throw new FindNullException(MessageConstant.FIND_SINGER_NULL);
     }
 
 

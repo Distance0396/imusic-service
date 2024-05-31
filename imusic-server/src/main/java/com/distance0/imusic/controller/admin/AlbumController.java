@@ -22,7 +22,7 @@ import java.util.List;
 @Slf4j
 @Api(tags = "专辑接口")
 @RestController
-@RequestMapping("/album")
+@RequestMapping("/admin/album")
 public class AlbumController {
 
     @Autowired

@@ -4,12 +4,12 @@
 
 <!--    添加歌手-->
     <insert id="insert">
-        insert into  singer (name, avatar, type, status, description, create_time) VALUES
-            (#{name},#{avatar},#{type},#{status},#{description},#{createTime})
+        insert into  singer (name, avatar, type, status, description, create_time, image, language) VALUES
+            (#{name},#{avatar},#{type},#{status},#{description},#{createTime},#{image},#{language})
     </insert>
     <!--    查询歌手-->
     <select id="getSinger" resultType="com.distance0.imusic.entity.Singer">
-        select id, name, avatar, type, status, description, create_time from singer
+        select id, name, avatar, type, status, description, create_time, image, language from singer
             <where>
                 <if test="id != null">
                     id = #{id}
@@ -26,11 +26,14 @@
                 <if test="createTime != null">
                     and create_time = #{createTime}
                 </if>
+                <if test="language != null">
+                    and language = #{language}
+                </if>
             </where>
     </select>
 <!--    歌手分页查询-->
     <select id="pageQuery" resultType="com.distance0.imusic.vo.SingerVo">
-        select id, name, avatar, type, status, description, create_time from singer
+        select id, name, avatar, type, status, description, create_time, image, language from singer
             <where>
                 <if test="name != null">
                     name like concat('%',#{name},'%')
@@ -40,6 +43,9 @@
                 </if>
                 <if test="status != null &amp;&amp; status != 0">
                     and status = #{status}
+                </if>
+                <if test="language != null">
+                    and language = #{language}
                 </if>
             </where>
 #         order by id desc
@@ -62,10 +68,16 @@
                     status = #{status},
                 </if>
                 <if test="description != null">
-                    description = #{description}
+                    description = #{description},
                 </if>
                 <if test="createTime != null">
-                    create_time = #{createTime}
+                    create_time = #{createTime},
+                </if>
+                <if test="image != null">
+                    image = #{image},
+                </if>
+                <if test="language != null">
+                    language = #{language}
                 </if>
             </set>
         where id = #{id}

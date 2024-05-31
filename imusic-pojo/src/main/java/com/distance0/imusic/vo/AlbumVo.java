@@ -23,6 +23,7 @@ public class AlbumVo implements Serializable {
     private Long id;
     private String name;
     private String singerName;
+    private Long singerId;
     private String image;
     private String description;
     private Integer status;

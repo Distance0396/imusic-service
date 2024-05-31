@@ -89,6 +89,7 @@
                     and count = #{count}
                 </if>
             </where>
+        order by count desc
     </select>
 <!--    修改音乐-->
     <update id="update">

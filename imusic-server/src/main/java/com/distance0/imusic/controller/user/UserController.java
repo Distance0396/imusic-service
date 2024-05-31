@@ -27,7 +27,7 @@ import java.util.HashMap;
 @Slf4j
 @Api(tags = "用户接口")
 @RestController
-@RequestMapping("/user")
+@RequestMapping("/user/user")
 public class UserController {
 
     @Autowired

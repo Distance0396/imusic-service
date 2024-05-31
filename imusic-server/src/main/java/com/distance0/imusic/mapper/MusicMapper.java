@@ -29,10 +29,10 @@ public interface MusicMapper {
 
     /**
      * 音乐分页
-     * @param dto
+     * @param Music
      * @return
      */
-    Page<Music> pageQuery(MusicPageDto dto);
+    Page<Music> pageQuery(Music Music);
 
     /**
      * 修改状态

@@ -16,6 +16,10 @@ public class SingerPageDto {
     private int type;
     @ApiModelProperty("状态")
     private int status;
+    @ApiModelProperty("背景图")
+    private String image;
+    @ApiModelProperty("语言")
+    private String language;
     @ApiModelProperty("页码")
     private int page;
     @ApiModelProperty("每页记录数")

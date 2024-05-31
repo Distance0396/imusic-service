@@ -23,7 +23,7 @@ import java.util.List;
 @Slf4j
 @Api(tags = "音乐接口")
 @RestController
-@RequestMapping("/music")
+@RequestMapping("/admin/music")
 public class MusicController {
 
     @Autowired

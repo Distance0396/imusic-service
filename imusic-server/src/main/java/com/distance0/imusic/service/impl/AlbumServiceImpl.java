@@ -18,12 +18,16 @@ import com.distance0.imusic.service.AlbumService;
 import com.distance0.imusic.vo.AlbumVo;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author: XiangJing
@@ -175,5 +179,50 @@ public class AlbumServiceImpl implements AlbumService {
             return;
         }
         throw new UnknownErrorException(MessageConstant.UNKNOWN_ERROR);
+    }
+
+    /**
+     * 获取随机专辑
+     * @return
+     */
+    @Override
+    public List<AlbumVo> getRandomAlbum() {
+        List<AlbumVo> randomAlbum = albumMapper.getRandomAlbum();
+        randomAlbum.forEach(x -> {
+            Singer build = Singer.builder().id(x.getSingerId()).build();
+            Singer singer = singerMapper.getSinger(build);
+            x.setSingerName(singer.getName());
+        });
+        return randomAlbum;
+    }
+
+    /**
+     * 根据歌手id查询专辑
+     * @param id
+     * @return
+     */
+    @Override
+    public List<AlbumVo> getAlbumBySingerId(Long id) {
+        List<Album> albumList = albumMapper.getAlbumList(Album.builder().singerId(id).status(1).build());
+
+        return albumList.stream().map(x -> {
+            AlbumVo albumVo = new AlbumVo();
+            BeanUtils.copyProperties(x, albumVo);
+            return albumVo;
+        }).collect(Collectors.toList());
+    }
+
+    /**
+     * 根据专辑id查询信息
+     * @param id
+     * @return
+     */
+    @Override
+    public AlbumVo getAlbumById(Long id) {
+        Album albumByAlbum = albumMapper.getAlbumByAlbum(Album.builder().id(id).build());
+        Singer singer = singerMapper.getSinger(Singer.builder().id(albumByAlbum.getSingerId()).build());
+        AlbumVo build = AlbumVo.builder().singerName(singer.getName()).build();
+        BeanUtils.copyProperties(albumByAlbum, build);
+        return build;
     }
 }

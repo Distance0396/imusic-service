@@ -6,6 +6,7 @@ import com.distance0.imusic.dto.SingerSaveDto;
 import com.distance0.imusic.entity.Album;
 import com.distance0.imusic.entity.Singer;
 import com.distance0.imusic.result.PageResult;
+import com.distance0.imusic.vo.SingerDetailVo;
 
 import java.util.List;
 
@@ -47,10 +48,11 @@ public interface SingerService {
 
     /**
      * 根据id查询歌手详情
+     *
      * @param id
      * @return
      */
-    Singer findMusicById(Long id);
+    Singer findSingerById(Long id);
 
     /**
      * 修改歌手信息
@@ -58,4 +60,24 @@ public interface SingerService {
      * @return
      */
     void update(SingerDto dto);
+
+    /**
+     * 获取歌手数组
+     * @return
+     */
+    List<Singer> getSingerList();
+
+    /**
+     * 随机获取歌手
+     * @return
+     */
+    List<Singer> getRandomSinger();
+
+
+    /**
+     * 根据id查找歌手详情(音乐列表)
+     * @param id
+     * @return
+     */
+    SingerDetailVo findSingerDetailById(Long id);
 }

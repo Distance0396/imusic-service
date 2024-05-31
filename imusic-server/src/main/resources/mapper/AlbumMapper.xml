@@ -37,7 +37,7 @@
                     and name = #{name}
                 </if>
                 <if test="singerId != null">
-                    and singer_id = #{singerid}
+                    and singer_id = #{singerId}
                 </if>
                 <if test="image != null">
                     and image = #{image}
@@ -58,7 +58,7 @@
     </select>
 <!--    查找专辑-->
     <select id="getAlbumList" resultType="com.distance0.imusic.entity.Album">
-        select id, name, singer_id, image, description, release_time, create_time from album
+        select id, name, singer_id, image, description, release_time, create_time, status from album
             <where>
                 <if test="id != null">
                     id = #{id}
@@ -80,6 +80,9 @@
                 </if>
                 <if test="createTime != null">
                     and create_time = #{createTime}
+                </if>
+                <if test="status != null">
+                    and status = #{status}
                 </if>
             </where>
     </select>

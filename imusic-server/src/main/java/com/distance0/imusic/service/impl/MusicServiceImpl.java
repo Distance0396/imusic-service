@@ -48,7 +48,9 @@ public class MusicServiceImpl implements MusicService {
     @Override
     public PageResult page(MusicPageDto dto) {
         PageHelper.startPage(dto.getPage(),dto.getPageSize());
-        Page<Music> page = musicMapper.pageQuery(dto);
+        Music music = new Music();
+        BeanUtils.copyProperties(dto,music);
+        Page<Music> page = musicMapper.pageQuery(music);
         return new PageResult(page.getTotal(),page.getResult());
     }
 

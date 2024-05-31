@@ -18,5 +18,7 @@ public class SingerDto implements Serializable {
     private Integer type;
     private Integer status;
     private String description;
+    private String image;
+    private String language;
     private static final long serialVersionUID = 1L;
 }
