@@ -1,5 +1,6 @@
 package com.distance0.imusic.service.impl;
 
+import com.alibaba.druid.sql.dialect.hive.ast.HiveMultiInsertStatement;
 import com.distance0.imusic.constant.MessageConstant;
 import com.distance0.imusic.constant.StatusConstant;
 import com.distance0.imusic.dto.AlbumPageDto;
@@ -156,7 +157,7 @@ public class AlbumServiceImpl implements AlbumService {
             AlbumVo build = AlbumVo
                     .builder()
                     .singerName(singer1.getName())
-                    .MusicList(musicList)
+                    .musicList(musicList)
                     .build();
             BeanUtils.copyProperties(albumByAlbum, build);
 
@@ -189,8 +190,7 @@ public class AlbumServiceImpl implements AlbumService {
     public List<AlbumVo> getRandomAlbum() {
         List<AlbumVo> randomAlbum = albumMapper.getRandomAlbum();
         randomAlbum.forEach(x -> {
-            Singer build = Singer.builder().id(x.getSingerId()).build();
-            Singer singer = singerMapper.getSinger(build);
+            Singer singer = singerMapper.getSinger(Singer.builder().id(x.getSingerId()).build());
             x.setSingerName(singer.getName());
         });
         return randomAlbum;
@@ -221,7 +221,9 @@ public class AlbumServiceImpl implements AlbumService {
     public AlbumVo getAlbumById(Long id) {
         Album albumByAlbum = albumMapper.getAlbumByAlbum(Album.builder().id(id).build());
         Singer singer = singerMapper.getSinger(Singer.builder().id(albumByAlbum.getSingerId()).build());
-        AlbumVo build = AlbumVo.builder().singerName(singer.getName()).build();
+        List<Music> musicList = musicMapper.getMusicList(Music.builder().albumId(albumByAlbum.getId()).build());
+
+        AlbumVo build = AlbumVo.builder().singerName(singer.getName()).musicList(musicList).build();
         BeanUtils.copyProperties(albumByAlbum, build);
         return build;
     }

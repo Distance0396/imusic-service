@@ -12,6 +12,8 @@ import com.distance0.imusic.exception.NameOccupancyException;
 import com.distance0.imusic.exception.PasswordErrorException;
 import com.distance0.imusic.service.UserService;
 import com.distance0.imusic.mapper.UserMapper;
+import com.distance0.imusic.vo.SimpleUserVo;
+import org.springframework.beans.BeanUtils;
 import org.springframework.util.DigestUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -74,7 +76,7 @@ public class UserServiceImpl implements UserService {
 
         User build = User.builder()
                 .name(dto.getName())
-                .Account(dto.getAccount())
+                .account(dto.getAccount())
                 .password(password)
                 .status(StatusConstant.ENABLE)
                 .sex(3)
@@ -96,5 +98,18 @@ public class UserServiceImpl implements UserService {
         build = userMapper.getUser(build);
         build.setPassword("你猜我猜猜");
         return build;
+    }
+
+    /**
+     * 根据id查询简单用户
+     * @param id
+     * @return
+     */
+    @Override
+    public SimpleUserVo getSimpleUserById(Long id) {
+        User user = userMapper.getUser(User.builder().id(id).build());
+        SimpleUserVo simpleUserVo = new SimpleUserVo();
+        BeanUtils.copyProperties(user,simpleUserVo);
+        return simpleUserVo;
     }
 }

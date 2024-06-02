@@ -9,6 +9,7 @@ import com.distance0.imusic.properties.JwtProperties;
 import com.distance0.imusic.result.R;
 import com.distance0.imusic.service.UserService;
 import com.distance0.imusic.utils.JwtUtil;
+import com.distance0.imusic.vo.SimpleUserVo;
 import com.distance0.imusic.vo.UserLoginVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiModelProperty;
@@ -42,7 +43,8 @@ public class UserController {
      */
     @ApiOperation("获取用户信息")
     @GetMapping("/info")
-    public R info() {
+    public R<User> info() {
+        log.info("获取用户信息");
         User user = userService.getUserInfo();
         return R.success(user);
     }
@@ -78,7 +80,6 @@ public class UserController {
 
     /**
      * 用户注册
-     *
      * @param dto
      * @return
      */
@@ -89,5 +90,19 @@ public class UserController {
         userService.register(dto);
         return R.success();
     }
+
+    /**
+     * 根据id查询简单用户
+     * @param id
+     * @return
+     */
+    @GetMapping
+    @ApiOperation("根据id查询简单用户")
+    public R<SimpleUserVo> getSimpleUserById(@RequestParam("id") Long id) {
+        log.info("根据id查询简单用户:{}",id);
+        SimpleUserVo simpleUserVo = userService.getSimpleUserById(id);
+        return R.success(simpleUserVo);
+    }
+
 
 }

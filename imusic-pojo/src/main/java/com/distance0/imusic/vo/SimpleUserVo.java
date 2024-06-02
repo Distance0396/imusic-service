@@ -1,6 +1,6 @@
 package com.distance0.imusic.vo;
 
-import com.distance0.imusic.entity.Music;
+import com.distance0.imusic.entity.MusicForm;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -12,24 +12,20 @@ import java.util.List;
 
 /**
  * @author: XiangJing
- * @date: 2024/5/24 上午8:33
+ * @date: 2024/6/2 下午10:01
  * @description:
  */
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class AlbumVo implements Serializable {
+public class SimpleUserVo implements Serializable {
     private Long id;
     private String name;
-    private String singerName;
-    private Long singerId;
-    private String image;
-    private String description;
-    private Integer status;
-    private LocalDateTime releaseTime;
-    private LocalDateTime createTime;
-    private List<Music> musicList;
+    private String account;
+    private Integer phone;
+    private String avatar;
+    private String email;
+    private Integer sex;
     private static final long serialVersionUID = 1L;
-
 }

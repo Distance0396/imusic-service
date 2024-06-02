@@ -28,10 +28,11 @@ mybatis:
 logging:
   level:
     com:
-      sky:
-        mapper: debug
-        service: info
-        controller: info
+      distance0:
+        imusic:
+          mapper: debug
+          service: info
+          controller: info
 
 music:
   jwt:

@@ -3,6 +3,7 @@ package com.distance0.imusic.service;
 import com.distance0.imusic.dto.UserRegisterDto;
 import com.distance0.imusic.entity.User;
 import com.distance0.imusic.dto.UserLoginDto;
+import com.distance0.imusic.vo.SimpleUserVo;
 import org.apache.ibatis.annotations.Param;
 
 /**
@@ -32,4 +33,10 @@ public interface UserService {
     User getUserInfo();
 
 
+    /**
+     * 根据id查询简单用户
+     * @param id
+     * @return
+     */
+    SimpleUserVo getSimpleUserById(Long id);
 }

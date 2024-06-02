@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.distance0.imusic.mapper.MusicFormMapper">
+
+    <resultMap id="getMusicFormBy" type="MusicForm">
+        <id column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="user_id" property="userId" />
+        <result column="image" property="image" />
+        <result column="count" property="count" />
+        <result column="description" property="description" />
+        <result column="create_time" property="createTime" />
+        <result column="update_time" property="updateTime" />
+        <collection property="musicList" ofType="Music">
+            <id column="id" property="id" />
+            <result column="name" property="name" />
+            <result column="album_name" property="albumName" />
+            <result column="singer_name" property="singerName" />
+            <result column="album_id" property="albumId" />
+            <result column="singer_id" property="singerId" />
+            <result column="audio" property="audio" />
+            <result column="count" property="count" />
+        </collection>
+    </resultMap>
+<!--    歌单 音乐-->
+    <resultMap id="getMusicFormById" type="MusicForm">
+        <id column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="user_id" property="userId" />
+        <result column="image" property="image" />
+        <result column="count" property="count" />
+        <result column="description" property="description" />
+        <result column="create_time" property="createTime" />
+        <result column="update_time" property="updateTime" />
+        <collection property="musicList" ofType="Music">
+            <id column="mid" property="id" />
+            <result column="mname" property="name" />
+            <result column="album_name" property="albumName" />
+            <result column="singer_name" property="singerName" />
+            <result column="album_id" property="albumId" />
+            <result column="singer_id" property="singerId" />
+            <result column="audio" property="audio" />
+            <result column="mcount" property="count" />
+        </collection>
+    </resultMap>
+
+<!--    用户 歌单-->
+    <resultMap id="getMusicFormByUserId" type="User">
+        <id column="id" property="id"/>
+        <result column="name" property="name"/>
+        <collection property="musicFormList" ofType="MusicForm">
+            <id column="fid" property="id" />
+            <result column="fname" property="name" />
+            <result column="image" property="image" />
+            <result column="description" property="description" />
+            <result column="count" property="count" />
+            <result column="user_id" property="userId" />
+        </collection>
+    </resultMap>
+
+<!--    根据用户id查询收藏歌单-->
+    <select id="getMusicFormByUser" resultMap="getMusicFormByUserId">
+        select u.*, f.name as fname, f.image, f.description, f.count, f.id as fid, f.user_id from user u
+            right join music_form f on u.id = f.user_id
+            where u.id = #{id}
+    </select>
+
+    <select id="getMusicFormById" resultMap="getMusicFormById">
+        select f.*, m.id as mid, m.name as mname, m.album_name, m.singer_name, m.album_id, m.singer_id, m.audio, m.count as mcount from music_form f, music_form_music mfm, music m
+            where mfm.music_form_id = f.id and mfm.music_id = m.id and f.id = #{id}
+    </select>
+
+</mapper>

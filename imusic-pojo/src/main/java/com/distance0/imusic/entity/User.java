@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * @author: XiangJing
@@ -20,7 +21,7 @@ import java.time.LocalDateTime;
 public class User implements Serializable {
     private Long id;
     private String name;
-    private String Account;
+    private String account;
     private String password;
     private Integer phone;
     private String avatar;
@@ -28,5 +29,6 @@ public class User implements Serializable {
     private Integer sex;
     private Integer status;
     private LocalDateTime createTime;
+    private List<MusicForm> musicFormList;
     private static final long serialVersionUID = 1L;
 }
