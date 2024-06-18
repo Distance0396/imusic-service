@@ -6,28 +6,23 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
 
 /**
  * @author: XiangJing
- * @date: 2024/5/26 下午2:26
+ * @date: 2024/6/2 下午10:01
  * @description:
  */
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class MusicVo implements Serializable {
+public class UserSimpleVo implements Serializable {
     private Long id;
     private String name;
-    private Long albumId;
-    private String albumName;
-    private String singerName;
-    private String audio;
-    private Integer count;
-    private String image;
-    private Integer sort;
-    private String lyric;
-    private LocalDateTime releaseTime;
+    private String account;
+    private Integer phone;
+    private String avatar;
+    private String email;
+    private Integer sex;
     private static final long serialVersionUID = 1L;
 }

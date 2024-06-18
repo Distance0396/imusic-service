@@ -24,11 +24,12 @@ public class SingerDetailVo implements Serializable {
     private String name;
     private String avatar;
     private Integer type;
-    private Integer status;
     private String description;
-    private LocalDateTime createTime;
+    private String color;
+//    private LocalDateTime createTime;
     private String image;
     private String language;
-    private List<MusicDetailVo> musicList;
+    private List<MusicImageVo> musicList;
+    private List<AlbumSimpleVo> albumList;
     private static final long serialVersionUID = 1L;
 }

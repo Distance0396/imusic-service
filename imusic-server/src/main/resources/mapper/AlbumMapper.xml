@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.distance0.imusic.mapper.AlbumMapper">
-
+<!--    添加专辑-->
     <insert id="insert">
-        insert into album (name, singer_id, image, description, release_time, create_time, status) VALUES
-            (#{name},#{singerId},#{image},#{description},#{releaseTime},#{createTime},#{status})
+        insert into album (name, singer_id, image, description, release_time, create_time, status, color) VALUES
+            (#{name},#{singerId},#{image},#{description},#{releaseTime},#{createTime},#{status},#{color})
     </insert>
+<!--    修改专辑-->
     <update id="update">
         update album
             <set>
@@ -24,11 +25,15 @@
                 <if test="releaseTime != null">
                     release_time = #{releaseTime}
                 </if>
+                <if test="color != null">
+                    color = #{color}
+                </if>
             </set>
         where id = #{id}
     </update>
-    <select id="getAlbumByAlbum" resultType="com.distance0.imusic.entity.Album">
-        select id, name, singer_id, image, description, release_time, create_time, status from album
+<!--    查询专辑-->
+    <select id="select" resultType="com.distance0.imusic.entity.Album">
+        select id, name, singer_id, image, description, release_time, create_time, status, color from album
             <where>
                 <if test="id != null">
                     id = #{id}
@@ -56,7 +61,7 @@
                 </if>
             </where>
     </select>
-<!--    查找专辑-->
+<!--    查找专辑list-->
     <select id="getAlbumList" resultType="com.distance0.imusic.entity.Album">
         select id, name, singer_id, image, description, release_time, create_time, status from album
             <where>
@@ -88,7 +93,7 @@
     </select>
 <!--    分页-->
     <select id="pageQuery" resultType="com.distance0.imusic.entity.Album">
-        select id, name, singer_id, image, description, release_time, create_time, status from album
+        select id, name, singer_id, image, description, release_time, create_time, status, color from album
             <where>
                 <if test="name != null">
                     name like concat('%',#{name},'%')

@@ -3,6 +3,7 @@ package com.distance0.imusic.service;
 import com.distance0.imusic.dto.AlbumPageDto;
 import com.distance0.imusic.dto.AlbumDto;
 import com.distance0.imusic.result.PageResult;
+import com.distance0.imusic.vo.AlbumSimpleVo;
 import com.distance0.imusic.vo.AlbumVo;
 
 import java.util.List;
@@ -55,14 +56,14 @@ public interface AlbumService {
      *
      * @return
      */
-    List<AlbumVo> getRandomAlbum();
+    List<AlbumSimpleVo> getRandomAlbum();
 
     /**
      * 根据歌手id查询专辑
      * @param id
      * @return
      */
-    List<AlbumVo> getAlbumBySingerId(Long id);
+    List<AlbumSimpleVo> getAlbumBySingerId(Long id);
 
     /**
      * 根据专辑id查询信息

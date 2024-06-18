@@ -4,6 +4,7 @@ import com.distance0.imusic.entity.Singer;
 import com.distance0.imusic.result.R;
 import com.distance0.imusic.service.SingerService;
 import com.distance0.imusic.vo.SingerDetailVo;
+import com.distance0.imusic.vo.SingerSimpleVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
@@ -35,9 +36,9 @@ public class SingerController {
      */
     @GetMapping("")
     @ApiOperation("获取歌手数组")
-    public R<List<Singer>> getSingerList(){
+    public R<List<SingerSimpleVo>> getSingerList(){
         log.info("探索页面");
-        List<Singer> singerList = singerService.getSingerList();
+        List<SingerSimpleVo> singerList = singerService.getSingerList();
         return R.success(singerList);
     }
 
@@ -60,9 +61,9 @@ public class SingerController {
      */
     @ApiOperation("随机获取歌手")
     @GetMapping("/random")
-    public R<List<Singer>> getRandomSinger(){
+    public R<List<SingerSimpleVo>> getRandomSinger(){
         log.info("随机获取歌手");
-        List<Singer> singerList = singerService.getRandomSinger();
+        List<SingerSimpleVo> singerList = singerService.getRandomSinger();
         return R.success(singerList);
     }
 }

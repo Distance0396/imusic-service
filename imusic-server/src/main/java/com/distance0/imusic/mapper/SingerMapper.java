@@ -30,6 +30,13 @@ public interface SingerMapper {
      */
     Singer getSinger(Singer singer);
 
+    /**
+     * 根据歌手id查询姓名
+     * @param id
+     * @return
+     */
+    @Select("select name from singer where id = #{id}")
+    String getSingerName(Long id);
 
     /**
      * 歌手分页查询
@@ -45,7 +52,7 @@ public interface SingerMapper {
     void update(Singer singer);
 
     /**
-     * 查询所有歌手
+     * 查询所有歌手 前台
      * @return
      */
     @Select("select * from singer where status = 1")
@@ -57,5 +64,24 @@ public interface SingerMapper {
      */
     @Select("select * from singer where status = 1 order by RAND() LIMIT 20")
     List<Singer> getRandomSinger();
+
+    /**
+     * 根据id查询歌手头像
+     * @param id
+     * @return
+     */
+    @Select("select avatar from singer where id = #{id}")
+    String getImageBySingerId(Long id);
+
+    /**
+     * 搜索
+     * @param keyword
+     * @return
+     */
+    @Select("select * from singer where name like concat('%',#{keyword},'%')")
+    List<Singer> dimSingerByKeyword(String keyword);
+
+
+//    List<>
 
 }

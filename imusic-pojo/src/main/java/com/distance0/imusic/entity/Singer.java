@@ -28,6 +28,7 @@ public class Singer implements Serializable {
     private LocalDateTime createTime;
     private String image;
     private String language;
+    private String color;
     private static final long serialVersionUID = 1L;
 
 }

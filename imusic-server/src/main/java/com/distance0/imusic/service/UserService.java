@@ -1,14 +1,15 @@
 package com.distance0.imusic.service;
 
+import com.distance0.imusic.dto.UserLoginDto;
+import com.distance0.imusic.dto.UserMiniDto;
 import com.distance0.imusic.dto.UserRegisterDto;
 import com.distance0.imusic.entity.User;
-import com.distance0.imusic.dto.UserLoginDto;
-import com.distance0.imusic.vo.SimpleUserVo;
-import org.apache.ibatis.annotations.Param;
+import com.distance0.imusic.vo.CollectFormVo;
+import com.distance0.imusic.vo.UserSimpleVo;
 
 /**
  * @author: XiangJing
- * @date: 2024/5/18 下午3:47
+ * @date: 2024/6/15 下午5:20
  * @description:
  */
 public interface UserService {
@@ -18,6 +19,14 @@ public interface UserService {
      * @return
      */
     User login(UserLoginDto dto);
+
+    /**
+     * 小程序 用户登录
+     * @param dto
+     * @return
+     */
+    User wxLogin(UserMiniDto dto);
+
 
     /**
      * 用户注册
@@ -38,5 +47,13 @@ public interface UserService {
      * @param id
      * @return
      */
-    SimpleUserVo getSimpleUserById(Long id);
+    UserSimpleVo getSimpleUserById(Long id);
+
+
+    /**
+     * 根据用户id查询收藏
+     * @return
+     */
+    CollectFormVo getCollectForm();
+
 }

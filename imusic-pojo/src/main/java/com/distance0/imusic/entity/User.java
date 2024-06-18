@@ -21,6 +21,7 @@ import java.util.List;
 public class User implements Serializable {
     private Long id;
     private String name;
+    private String openId;
     private String account;
     private String password;
     private Integer phone;

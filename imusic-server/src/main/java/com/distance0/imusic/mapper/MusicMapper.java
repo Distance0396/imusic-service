@@ -4,6 +4,7 @@ import com.distance0.imusic.dto.MusicPageDto;
 import com.distance0.imusic.entity.Music;
 import com.github.pagehelper.Page;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Select;
 
 import java.util.List;
 
@@ -46,4 +47,13 @@ public interface MusicMapper {
      * @return
      */
     List<Music> getMusicList(Music music);
+
+
+    /**
+     * 搜索
+     * @param keyword
+     * @return
+     */
+    @Select("select * from music where CONCAT(name, singer_name) like concat('%',#{keyword},'%')")
+    List<Music> dimMusicByKeyword(String keyword);
 }

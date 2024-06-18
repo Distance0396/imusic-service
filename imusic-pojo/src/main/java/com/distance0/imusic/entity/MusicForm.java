@@ -1,5 +1,6 @@
 package com.distance0.imusic.entity;
 
+import com.distance0.imusic.vo.MusicImageVo;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -25,9 +26,9 @@ public class MusicForm implements Serializable {
     private String image;
     private Integer count;
     private String description;
+    private String color;
     private LocalDateTime createTime;
     private LocalDateTime updateTime;
-    private List<Music> musicList;
-
+    private List<MusicImageVo> musicList;
     private static final long serialVersionUID = 1L;
 }

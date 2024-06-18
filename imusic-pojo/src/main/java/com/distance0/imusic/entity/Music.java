@@ -30,6 +30,7 @@ public class Music implements Serializable {
     private Integer sort;
     private String lyric;
     private Integer status;
+    private String image;
     private LocalDateTime createTime;
     private LocalDateTime releaseTime;
     private static final long serialVersionUID = 1L;

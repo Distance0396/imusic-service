@@ -10,6 +10,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
 import springfox.documentation.builders.ApiInfoBuilder;
 import springfox.documentation.builders.PathSelectors;
@@ -44,14 +45,14 @@ public class WebMvcConfiguration extends WebMvcConfigurationSupport {
         ApiInfo apiInfo = new ApiInfoBuilder()
                 .title("i音乐")
                 .version("2.0")
-                .description("苍穹外卖接口文档")
+                .description("i音乐接口文档")
                 .build();
 
         Docket docket = new Docket(DocumentationType.SWAGGER_2)
                 .groupName("用户端接口")
                 .apiInfo(apiInfo)
                 .select()
-                .apis(RequestHandlerSelectors.basePackage("com.distance0.imusic.controller.user"))
+                .apis(RequestHandlerSelectors.basePackage("com.distance0.imusic.controller"))
                 .paths(PathSelectors.any())
                 .build();
         return docket;
@@ -67,15 +68,25 @@ public class WebMvcConfiguration extends WebMvcConfigurationSupport {
         registry.addInterceptor(jwtTokenUserInterceptor)
                 .addPathPatterns("/user/**")
                 .excludePathPatterns("/user/user/login")
+                .excludePathPatterns("/user/user/login/wx")
                 .excludePathPatterns("/user/user/register")
                 .excludePathPatterns("/user/singer/**")
-                .excludePathPatterns("/user/album/**");
+                .excludePathPatterns("/user/album/**")
+                .excludePathPatterns("/user/music-form/{id}");
 
         registry.addInterceptor(corsInterceptor).addPathPatterns("/**");
 
         super.addInterceptors(registry);
     }
 
+    /**
+     * 设置静态资源映射
+     * @param registry
+     */
+    protected void addResourceHandlers(ResourceHandlerRegistry registry) {
+        registry.addResourceHandler("/doc.html").addResourceLocations("classpath:/META-INF/resources/");
+        registry.addResourceHandler("/webjars/**").addResourceLocations("classpath:/META-INF/resources/webjars/");
+    }
 
     /**
      * MVC的消息转换器

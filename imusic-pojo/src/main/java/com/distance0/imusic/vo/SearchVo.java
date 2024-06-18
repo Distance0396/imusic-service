@@ -1,34 +1,28 @@
 package com.distance0.imusic.vo;
 
+import com.distance0.imusic.entity.Album;
 import com.distance0.imusic.entity.Music;
+import com.distance0.imusic.entity.Singer;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
 import java.util.List;
 
 /**
  * @author: XiangJing
- * @date: 2024/5/24 上午8:33
+ * @date: 2024/6/5 下午9:43
  * @description:
  */
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class AlbumVo implements Serializable {
-    private Long id;
-    private String name;
-    private String singerName;
-    private Long singerId;
-    private String image;
-    private String color;
-    private String description;
-    private LocalDateTime releaseTime;
+public class SearchVo implements Serializable {
     private List<MusicImageVo> musicList;
+    private List<Album> albumList;
+    private List<Singer> singerList;
     private static final long serialVersionUID = 1L;
-
 }

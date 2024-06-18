@@ -16,7 +16,11 @@ import com.distance0.imusic.mapper.MusicMapper;
 import com.distance0.imusic.mapper.SingerMapper;
 import com.distance0.imusic.result.PageResult;
 import com.distance0.imusic.service.AlbumService;
+import com.distance0.imusic.utils.ImagesUtil;
+import com.distance0.imusic.vo.AlbumSimpleVo;
 import com.distance0.imusic.vo.AlbumVo;
+import com.distance0.imusic.vo.MusicImageVo;
+import com.distance0.imusic.vo.MusicVo;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import org.slf4j.Logger;
@@ -25,6 +29,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -88,21 +93,26 @@ public class AlbumServiceImpl implements AlbumService {
                 .name(dto.getSingerName()).build();
         Singer singer = singerMapper.getSinger(build);
         // 查找到歌手就添加数据
-        if (singer != null){
+        if (singer == null){
+            throw new FindNullException(MessageConstant.FIND_SINGER_NULL);
+        }
+
+        try {
             Album album = Album.builder()
                     .singerId(singer.getId())
                     .name(dto.getName())
                     .status(StatusConstant.ENABLE)
                     .createTime(LocalDateTime.now())
                     .image(dto.getImage())
+                    .color(ImagesUtil.readImages(dto.getImage()))
                     .releaseTime(dto.getReleaseTime())
                     .description(dto.getDescription())
                     .build();
             albumMapper.insert(album);
-            return;
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
 
-        throw new FindNullException(MessageConstant.FIND_SINGER_NULL);
     }
 
     /**
@@ -113,25 +123,21 @@ public class AlbumServiceImpl implements AlbumService {
      */
     @Override
     public void changeStatus(Integer status, List<Long> id) {
-        int newStatus;
-        if (status.equals(StatusConstant.DISABLE)){
-            newStatus = StatusConstant.DISABLE;
-        }else if (status.equals(StatusConstant.ENABLE)){
-            newStatus = StatusConstant.ENABLE;
-        } else {
+
+        if (!status.equals(StatusConstant.DISABLE) && !status.equals(StatusConstant.ENABLE)){
             throw new StatusException(MessageConstant.STATUS_EXCEPTION);
         }
 
         for(Long x : id){
             Album album = new Album();
             album.setId(x);
-            album.setStatus(newStatus);
+            album.setStatus(status);
             albumMapper.update(album);
         }
     }
 
     /**
-     * 根据id查询专辑
+     * 根据id查询专辑 后台
      * @param id
      * @return
      */
@@ -139,7 +145,7 @@ public class AlbumServiceImpl implements AlbumService {
     public AlbumVo findById(Long id) {
         // 根据id查询专辑
         Album album = Album.builder().id(id).build();
-        Album albumByAlbum = albumMapper.getAlbumByAlbum(album);
+        Album albumByAlbum = albumMapper.select(album);
 
         // 为空就抛出异常
         if (albumByAlbum != null){
@@ -153,11 +159,17 @@ public class AlbumServiceImpl implements AlbumService {
                     .build();
             List<Music> musicList = musicMapper.getMusicList(musicBuilder);
 
+            List<MusicImageVo> musicImageVos = musicList.stream().map(x -> {
+                MusicImageVo music = new MusicImageVo();
+                BeanUtils.copyProperties(x, music);
+                return music;
+            }).collect(Collectors.toList());
+
             // 赋值给返回对象
             AlbumVo build = AlbumVo
                     .builder()
                     .singerName(singer1.getName())
-                    .musicList(musicList)
+                    .musicList(musicImageVos)
                     .build();
             BeanUtils.copyProperties(albumByAlbum, build);
 
@@ -187,13 +199,15 @@ public class AlbumServiceImpl implements AlbumService {
      * @return
      */
     @Override
-    public List<AlbumVo> getRandomAlbum() {
+    public List<AlbumSimpleVo> getRandomAlbum() {
         List<AlbumVo> randomAlbum = albumMapper.getRandomAlbum();
-        randomAlbum.forEach(x -> {
+        return randomAlbum.stream().map(x -> {
+            AlbumSimpleVo albumSimpleVo = new AlbumSimpleVo();
+            BeanUtils.copyProperties(x, albumSimpleVo);
             Singer singer = singerMapper.getSinger(Singer.builder().id(x.getSingerId()).build());
-            x.setSingerName(singer.getName());
-        });
-        return randomAlbum;
+            albumSimpleVo.setSingerName(singer.getName());
+            return albumSimpleVo;
+        }).collect(Collectors.toList());
     }
 
     /**
@@ -202,13 +216,16 @@ public class AlbumServiceImpl implements AlbumService {
      * @return
      */
     @Override
-    public List<AlbumVo> getAlbumBySingerId(Long id) {
+    public List<AlbumSimpleVo> getAlbumBySingerId(Long id) {
         List<Album> albumList = albumMapper.getAlbumList(Album.builder().singerId(id).status(1).build());
 
         return albumList.stream().map(x -> {
-            AlbumVo albumVo = new AlbumVo();
-            BeanUtils.copyProperties(x, albumVo);
-            return albumVo;
+            AlbumSimpleVo simpleVo = new AlbumSimpleVo();
+            BeanUtils.copyProperties(x, simpleVo);
+
+            String singerName = singerMapper.getSingerName(x.getSingerId());
+            simpleVo.setSingerName(singerName);
+            return simpleVo;
         }).collect(Collectors.toList());
     }
 
@@ -219,12 +236,19 @@ public class AlbumServiceImpl implements AlbumService {
      */
     @Override
     public AlbumVo getAlbumById(Long id) {
-        Album albumByAlbum = albumMapper.getAlbumByAlbum(Album.builder().id(id).build());
-        Singer singer = singerMapper.getSinger(Singer.builder().id(albumByAlbum.getSingerId()).build());
-        List<Music> musicList = musicMapper.getMusicList(Music.builder().albumId(albumByAlbum.getId()).build());
+        Album album = albumMapper.select(Album.builder().id(id).build());
+        List<Music> musicList = musicMapper.getMusicList(Music.builder().albumId(album.getId()).build());
 
-        AlbumVo build = AlbumVo.builder().singerName(singer.getName()).musicList(musicList).build();
-        BeanUtils.copyProperties(albumByAlbum, build);
+        List<MusicImageVo> collect = musicList.stream().map(music -> {
+            MusicImageVo musicImageVo = new MusicImageVo();
+            BeanUtils.copyProperties(music, musicImageVo);
+            musicImageVo.setImage(album.getImage());
+            return musicImageVo;
+        }).collect(Collectors.toList());
+
+        Singer singer = singerMapper.getSinger(Singer.builder().id(album.getSingerId()).build());
+        AlbumVo build = AlbumVo.builder().singerName(singer.getName()).musicList(collect).build();
+        BeanUtils.copyProperties(album, build);
         return build;
     }
 }

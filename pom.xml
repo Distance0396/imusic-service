@@ -12,18 +12,14 @@
     <artifactId>imusic</artifactId>
     <version>1.0.1</version>
     <packaging>pom</packaging>
-
-    <name>imusic</name>
-    <url>http://maven.apache.org</url>
     <modules>
         <module>imusic-common</module>
         <module>imusic-pojo</module>
         <module>imusic-server</module>
     </modules>
 
-
-
     <properties>
+        <java.version>17</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <mybatis.spring>2.2.0</mybatis.spring>
         <lombok>1.18.20</lombok>
@@ -116,4 +112,12 @@
         </dependencies>
     </dependencyManagement>
 
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
 </project>

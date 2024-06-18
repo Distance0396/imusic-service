@@ -4,7 +4,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.web.servlet.MultipartConfigFactory;
+import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.util.unit.DataSize;
 
 import javax.servlet.MultipartConfigElement;
@@ -16,6 +18,7 @@ import javax.servlet.MultipartConfigElement;
  */
 @Slf4j
 @SpringBootApplication
+@EnableCaching
 public class Application {
     public static void main(String[] args) {
         SpringApplication.run(Application.class, args);
@@ -26,7 +29,7 @@ public class Application {
     public MultipartConfigElement multipartConfigElement() {
         MultipartConfigFactory factory = new MultipartConfigFactory();
 // 单个数据大小
-        factory.setMaxFileSize(DataSize.parse("102400KB")); // KB,MB
+        factory.setMaxFileSize(DataSize.parse("10240KB")); // KB,MB
 /// 总上传数据大小
 //        factory.setMaxRequestSize(DataSize.parse("102400KB"));
         return factory.createMultipartConfig();

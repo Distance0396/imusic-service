@@ -16,18 +16,19 @@ import com.distance0.imusic.mapper.MusicMapper;
 import com.distance0.imusic.mapper.SingerMapper;
 import com.distance0.imusic.result.PageResult;
 import com.distance0.imusic.service.SingerService;
-import com.distance0.imusic.vo.MusicDetailVo;
-import com.distance0.imusic.vo.SingerDetailVo;
-import com.distance0.imusic.vo.SingerVo;
+import com.distance0.imusic.utils.ImagesUtil;
+import com.distance0.imusic.vo.*;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * @author: XiangJing
@@ -47,7 +48,7 @@ public class SingerServiceImpl implements SingerService {
     private MusicMapper musicMapper;
 
     /**
-     * 歌手分页查询
+     * 歌手分页查询 后台
      * @param dto
      * @return
      */
@@ -59,50 +60,49 @@ public class SingerServiceImpl implements SingerService {
     }
 
     /**
-     * 添加歌手
+     * 添加歌手 后台
      * @param dto
      * @return
      */
     @Override
     public void save(SingerSaveDto dto) {
+
         Singer build = Singer.builder()
                 .name(dto.getName())
                 .build();
-        //先判断数据是否重复
-        Singer singer = singerMapper.getSinger(build);
-
-        if (singer == null){
-            BeanUtils.copyProperties(dto, build);
-            build.setStatus(1);
-            build.setCreateTime(LocalDateTime.now());
-            singerMapper.insert(build);
+        //先判断歌手是否重复
+        if (singerMapper.getSinger(build) != null){
+            throw new SingerNameOccupancyException(MessageConstant.SINGER_NAME_OCCUPANCY);
         }
 
-        throw new SingerNameOccupancyException(MessageConstant.SINGER_NAME_OCCUPANCY);
-
+        BeanUtils.copyProperties(dto, build);
+        build.setStatus(1);
+        build.setCreateTime(LocalDateTime.now());
+        try {
+            build.setColor(ImagesUtil.readImages(dto.getImage()));
+        } catch (IOException e) {
+            throw new RuntimeException("图片颜色获取错误",e);
+        }
+        singerMapper.insert(build);
     }
 
     /**
-     * 修改状态
+     * 修改状态 后台
      * @param status
      * @param id
      * @return
      */
     @Override
     public void changeStatus(Integer status, List<Long> id) {
-        int newStatus;
-        if (status == StatusConstant.DISABLE){
-            newStatus = StatusConstant.DISABLE;
-        }else if (status == StatusConstant.ENABLE){
-            newStatus = StatusConstant.ENABLE;
-        } else {
+
+        if (!status.equals(StatusConstant.DISABLE) && !status.equals(StatusConstant.ENABLE)){
             throw new StatusException(MessageConstant.STATUS_EXCEPTION);
         }
 
         for(Long x : id){
             Singer singer = new Singer();
             singer.setId(x);
-            singer.setStatus(newStatus);
+            singer.setStatus(status);
             singerMapper.update(singer);
         }
 
@@ -173,8 +173,13 @@ public class SingerServiceImpl implements SingerService {
      * @return
      */
     @Override
-    public List<Singer> getSingerList() {
-        return singerMapper.selectAll();
+    public List<SingerSimpleVo> getSingerList() {
+        List<Singer> singerList = singerMapper.selectAll();
+        return singerList.stream().map(singer -> {
+            SingerSimpleVo singerSimpleVo = new SingerSimpleVo();
+            BeanUtils.copyProperties(singer, singerSimpleVo);
+            return singerSimpleVo;
+        }).collect(Collectors.toList());
     }
 
     /**
@@ -182,8 +187,13 @@ public class SingerServiceImpl implements SingerService {
      * @return
      */
     @Override
-    public List<Singer> getRandomSinger() {
-        return singerMapper.getRandomSinger();
+    public List<SingerSimpleVo> getRandomSinger() {
+        List<Singer> randomSinger = singerMapper.getRandomSinger();
+        return randomSinger.stream().map(singer -> {
+            SingerSimpleVo singerSimpleVo = new SingerSimpleVo();
+            BeanUtils.copyProperties(singer, singerSimpleVo);
+            return singerSimpleVo;
+        }).collect(Collectors.toList());
     }
 
     /**
@@ -197,25 +207,41 @@ public class SingerServiceImpl implements SingerService {
 
         if (singer != null){
             List<Music> musicList = musicMapper.getMusicList(Music.builder().singerId(singer.getId()).build());
-            System.out.println("musicList:" + musicList);
 
-            List<MusicDetailVo> collect = musicList.stream().map(music -> {
+            List<MusicImageVo> collect = musicList.stream().map(music -> {
+                MusicImageVo musicImageVo = new MusicImageVo();
+                BeanUtils.copyProperties(music, musicImageVo);
 
                 Album albumByAlbum = null;
                if (music.getAlbumId() != null){
-                   albumByAlbum = albumMapper.getAlbumByAlbum(Album.builder().id(music.getAlbumId()).build());
+                   albumByAlbum = albumMapper.select(Album.builder().id(music.getAlbumId()).build());
                }
-
-                MusicDetailVo musicDetailVo = new MusicDetailVo();
-                BeanUtils.copyProperties(music, musicDetailVo);
+               else {
+                   // 等于null查询歌手头像
+                   if (singer.getAvatar() == null) musicImageVo.setImage(singer.getImage());
+                   else musicImageVo.setImage(singer.getAvatar());
+               }
                 if (albumByAlbum != null && albumByAlbum.getImage() != null) {
-                    musicDetailVo.setAlbumImage(albumByAlbum.getImage());
+                    musicImageVo.setImage(albumByAlbum.getImage());
                 }
 
-                return musicDetailVo;
+                return musicImageVo;
             }).collect(Collectors.toList());
 
-            SingerDetailVo singerDetailVo = SingerDetailVo.builder()
+            List<Album> albumList = albumMapper.getAlbumList(Album.builder().singerId(singer.getId()).status(StatusConstant.ENABLE).build());
+
+            List<AlbumSimpleVo> collect1 = albumList.stream().map(x -> {
+                AlbumSimpleVo albumVo = new AlbumSimpleVo();
+                BeanUtils.copyProperties(x, albumVo);
+
+                String singerName = singerMapper.getSingerName(x.getSingerId());
+                albumVo.setSingerName(singerName);
+                return albumVo;
+            }).collect(Collectors.toList());
+
+            SingerDetailVo singerDetailVo = SingerDetailVo
+                    .builder()
+                    .albumList(collect1)
                     .musicList(collect)
                     .build();
             BeanUtils.copyProperties(singer, singerDetailVo);

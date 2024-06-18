@@ -1,9 +1,13 @@
 package com.distance0.imusic.mapper;
 
 import com.distance0.imusic.entity.User;
+import com.distance0.imusic.vo.CollectFormVo;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Options;
 import org.apache.ibatis.annotations.Select;
+
+import java.util.List;
 
 /**
  * @author: XiangJing
@@ -13,6 +17,7 @@ import org.apache.ibatis.annotations.Select;
 @Mapper
 public interface UserMapper {
     /**
+     * 获取用户
      * @param user
      * @return
      */
@@ -40,7 +45,19 @@ public interface UserMapper {
      * @param build
      * @return
      */
-    @Insert("insert into user (name, account, password, phone, avatar, status, email, sex, create_time) values" +
-            " (#{name},#{account},#{password},#{phone},#{avatar},#{status},#{email},#{sex},#{createTime})")
-    void register(User build);
+    void insert(User build);
+
+    /**
+     * 根据openid查询用户
+     * @param openId
+     * @return
+     */
+    @Select("select * from user where open_id = #{openId}")
+    User getUserByOpenId(String openId);
+
+    /**
+     * 根据用户id查询收藏
+     * @return
+     */
+    List<CollectFormVo> getCollectForm(Long id);
 }

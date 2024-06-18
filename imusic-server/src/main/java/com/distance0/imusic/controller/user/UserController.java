@@ -2,6 +2,7 @@ package com.distance0.imusic.controller.user;
 
 import com.distance0.imusic.constant.JwtConstant;
 import com.distance0.imusic.context.BaseContext;
+import com.distance0.imusic.dto.UserMiniDto;
 import com.distance0.imusic.dto.UserRegisterDto;
 import com.distance0.imusic.entity.User;
 import com.distance0.imusic.dto.UserLoginDto;
@@ -9,7 +10,9 @@ import com.distance0.imusic.properties.JwtProperties;
 import com.distance0.imusic.result.R;
 import com.distance0.imusic.service.UserService;
 import com.distance0.imusic.utils.JwtUtil;
-import com.distance0.imusic.vo.SimpleUserVo;
+import com.distance0.imusic.vo.CollectFormVo;
+import com.distance0.imusic.vo.UserMiniLoginVo;
+import com.distance0.imusic.vo.UserSimpleVo;
 import com.distance0.imusic.vo.UserLoginVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiModelProperty;
@@ -19,6 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * @author: XiangJing
@@ -38,6 +42,18 @@ public class UserController {
     private UserService userService;
 
     /**
+     * 根据用户id查询收藏
+     * @return
+     */
+    @ApiOperation("根据用户id查询收藏")
+    @GetMapping("/collectForm")
+    public R<CollectFormVo> getCollectForm(){
+        log.info("根据用户id查询收藏: {}", BaseContext.getContextId());
+        CollectFormVo collectForm = userService.getCollectForm();
+        return R.success(collectForm);
+    }
+
+    /**
      * 获取用户信息
      * @return
      */
@@ -50,7 +66,34 @@ public class UserController {
     }
 
     /**
-     * 用户登录
+     * 小程序 用户登录
+     * @param dto
+     * @return
+     */
+    @ApiOperation("用户登录返回token")
+    @PostMapping("/login/wx")
+    public R<UserMiniLoginVo> login(@RequestBody UserMiniDto dto){
+        log.info("授权码:{}", dto);
+        User user = userService.wxLogin(dto);
+
+        /*
+          token
+         */
+        HashMap<String, Object> userInfo = new HashMap<>();
+        userInfo.put(JwtConstant.USER_ID,user.getId());
+        String token = JwtUtil.createJWT(jwtProperties.getUserSecretKey(), jwtProperties.getUserTtl(), userInfo);
+
+        UserMiniLoginVo userVo = UserMiniLoginVo.builder()
+                .token(token)
+                .openid(user.getOpenId())
+                .id(user.getId())
+                .build();
+
+        return R.success(userVo);
+    }
+
+    /**
+     * 网页 用户登录
      * @param dto
      * @return
      */
@@ -98,9 +141,9 @@ public class UserController {
      */
     @GetMapping
     @ApiOperation("根据id查询简单用户")
-    public R<SimpleUserVo> getSimpleUserById(@RequestParam("id") Long id) {
+    public R<UserSimpleVo> getSimpleUserById(@RequestParam("id") Long id) {
         log.info("根据id查询简单用户:{}",id);
-        SimpleUserVo simpleUserVo = userService.getSimpleUserById(id);
+        UserSimpleVo simpleUserVo = userService.getSimpleUserById(id);
         return R.success(simpleUserVo);
     }
 

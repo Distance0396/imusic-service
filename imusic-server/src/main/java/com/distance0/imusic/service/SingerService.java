@@ -7,18 +7,28 @@ import com.distance0.imusic.entity.Album;
 import com.distance0.imusic.entity.Singer;
 import com.distance0.imusic.result.PageResult;
 import com.distance0.imusic.vo.SingerDetailVo;
+import com.distance0.imusic.vo.SingerSimpleVo;
 
 import java.util.List;
 
 /**
  * @author: XiangJing
- * @date: 2024/5/20 下午1:24
+ * @date: 2024/6/15 下午5:16
  * @description:
  */
 public interface SingerService {
 
+
+    /**
+     * @author: XiangJing
+     * @date: 2024/5/20 下午1:24
+     * @description:
+     */
+
+
     /**
      * 歌手分页查询
+     *
      * @param dto
      * @return
      */
@@ -26,6 +36,7 @@ public interface SingerService {
 
     /**
      * 添加歌手
+     *
      * @param dto
      * @return
      */
@@ -33,6 +44,7 @@ public interface SingerService {
 
     /**
      * 修改状态
+     *
      * @param status
      * @param id
      * @return
@@ -41,6 +53,7 @@ public interface SingerService {
 
     /**
      * 根据歌手名查询专辑
+     *
      * @param name
      * @return
      */
@@ -56,6 +69,7 @@ public interface SingerService {
 
     /**
      * 修改歌手信息
+     *
      * @param dto
      * @return
      */
@@ -63,21 +77,26 @@ public interface SingerService {
 
     /**
      * 获取歌手数组
+     *
      * @return
      */
-    List<Singer> getSingerList();
+    List<SingerSimpleVo> getSingerList();
 
     /**
      * 随机获取歌手
+     *
      * @return
      */
-    List<Singer> getRandomSinger();
+    List<SingerSimpleVo> getRandomSinger();
 
 
     /**
      * 根据id查找歌手详情(音乐列表)
+     *
      * @param id
      * @return
      */
     SingerDetailVo findSingerDetailById(Long id);
 }
+
+

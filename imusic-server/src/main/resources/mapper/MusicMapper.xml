@@ -3,12 +3,12 @@
 <mapper namespace="com.distance0.imusic.mapper.MusicMapper">
 
     <insert id="insert">
-        insert into music (name, album_id, singer_id, album_name, singer_name, audio, count, sort, lyric, create_time, status, release_time) VALUES
-            (#{name},#{albumId},#{singerId},#{albumName},#{singerName},#{audio},#{count},#{sort},#{lyric},#{createTime}, #{status},#{releaseTime})
+        insert into music (name, album_id, singer_id, album_name, singer_name, image, audio, count, sort, lyric, create_time, status, release_time) VALUES
+            (#{name},#{albumId},#{singerId},#{albumName},#{singerName},#{image},#{audio},#{count},#{sort},#{lyric},#{createTime}, #{status},#{releaseTime})
     </insert>
 
     <select id="getMusic" resultType="com.distance0.imusic.entity.Music">
-        select id, name, album_id, singer_id, album_name, singer_name, audio, count, sort, lyric, create_time, status, release_time from music
+        select id, name, album_id, singer_id, album_name, singer_name, audio, image, count, sort, lyric, create_time, status, release_time from music
             <where>
                 <if test="id != null">
                     id = #{id}
@@ -50,7 +50,7 @@
     </select>
 <!--    分页-->
     <select id="pageQuery" resultType="com.distance0.imusic.entity.Music">
-        select id, name, album_id, singer_id, album_name, singer_name, audio, count, sort, lyric, create_time, status, release_time from music
+        select id, name, album_id, singer_id, album_name, singer_name, image, audio, count, sort, lyric, create_time, status, release_time from music
             <where>
                 <if test="name != null">
                     name like concat('%',#{name},'%')
@@ -66,9 +66,9 @@
                 </if>
             </where>
     </select>
-<!--    获取音乐数组-->
+<!--    获取音乐-->
     <select id="getMusicList" resultType="com.distance0.imusic.entity.Music">
-        select id, name, album_name, singer_name, singer_id, album_id, audio, count, sort, lyric, create_time, status, release_time from music
+        select id, name, album_name, singer_name, singer_id, album_id, image, audio, count, sort, lyric, create_time, status, release_time from music
             <where>
                 <if test="name != null">
                     name = #{name}
@@ -95,17 +95,26 @@
     <update id="update">
         update music
             <set>
+                <if test="albumId == 0">
+                    album_id = null,
+                    album_name = null,
+                    sort = null,
+                </if>
                 <if test="id != null">
-                    id = #{id},
+                     id = #{id},
                 </if>
                 <if test="name != null">
                      name = #{name},
                 </if>
-                album_id = #{albumId},
+                <if test="albumId ！= null and albumId != 0">
+                     album_id = #{albumId},
+                </if>
                 <if test="singerId != null">
                      singer_id = #{singerId},
                 </if>
-                album_name = #{albumName},
+                <if test="albumName != null and albumId != 0">
+                     album_name = #{albumName},
+                </if>
                 <if test="singerName != null">
                      singer_name = #{singerName},
                 </if>
@@ -115,13 +124,22 @@
                 <if test="count != null">
                      count = #{count},
                 </if>
-                sort = #{sort},
-                release_time = #{releaseTime},
+                <if test="sort != null and albumId != 0">
+                     sort = #{sort},
+                </if>
+                <if test="releaseTime != null">
+                     release_time = #{releaseTime},
+                </if>
                 <if test="status != null">
                      status = #{status}
+                </if>
+                <if test="image != null">
+                    image = #{image}
                 </if>
             </set>
         where id = #{id}
     </update>
+
+
 
 </mapper>

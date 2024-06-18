@@ -4,12 +4,12 @@
 
 <!--    添加歌手-->
     <insert id="insert">
-        insert into  singer (name, avatar, type, status, description, create_time, image, language) VALUES
-            (#{name},#{avatar},#{type},#{status},#{description},#{createTime},#{image},#{language})
+        insert into  singer (name, avatar, type, status, description, create_time, image, language, color) VALUES
+            (#{name},#{avatar},#{type},#{status},#{description},#{createTime},#{image},#{language},#{color})
     </insert>
     <!--    查询歌手-->
     <select id="getSinger" resultType="com.distance0.imusic.entity.Singer">
-        select id, name, avatar, type, status, description, create_time, image, language from singer
+        select id, name, avatar, type, status, description, create_time, image, language, color from singer
             <where>
                 <if test="id != null">
                     id = #{id}

@@ -2,15 +2,22 @@
 
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">  
   <modelVersion>4.0.0</modelVersion>  
-  <parent> 
-    <groupId>com.distance0.imusic</groupId>  
-    <artifactId>imusic</artifactId>  
-    <version>1.0.1</version> 
-  </parent>  
-  <artifactId>imusic-server</artifactId>  
-  <packaging>war</packaging>  
-  <name>imusic-server Maven Webapp</name>  
-  <url>http://maven.apache.org</url>
+  <parent>
+    <groupId>com.distance0.imusic</groupId>
+    <artifactId>imusic</artifactId>
+    <version>1.0.1</version>
+  </parent>
+
+  <artifactId>imusic-server</artifactId>
+  <version>1.0.1</version>
+  <packaging>jar</packaging>
+  <name>imusic-server</name>
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+    <java.version>17</java.version>
+  </properties>
 
   <dependencies>
 
@@ -24,6 +31,16 @@
       <groupId>com.distance0.imusic</groupId>
       <artifactId>imusic-pojo</artifactId>
       <version>1.0.1</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-data-redis</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-cache</artifactId>
     </dependency>
 
     <dependency>
@@ -74,7 +91,17 @@
       <artifactId>pagehelper-spring-boot-starter</artifactId>
     </dependency>
   </dependencies>
-  <build> 
-    <finalName>imusic-server</finalName> 
-  </build> 
+  <build>
+    <plugins>
+      <plugin>
+        <!--该插件主要用途：构建可执行的JAR -->
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-maven-plugin</artifactId>
+        <configuration>
+          <!-- 指定该Main Class为全局的唯一入口 -->
+          <mainClass>com.distance0.imusic.Application</mainClass>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
 </project>

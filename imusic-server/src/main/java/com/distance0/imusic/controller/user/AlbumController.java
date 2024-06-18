@@ -3,6 +3,7 @@ package com.distance0.imusic.controller.user;
 import com.distance0.imusic.entity.Album;
 import com.distance0.imusic.result.R;
 import com.distance0.imusic.service.AlbumService;
+import com.distance0.imusic.vo.AlbumSimpleVo;
 import com.distance0.imusic.vo.AlbumVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -31,9 +32,9 @@ public class AlbumController {
      */
     @GetMapping("/random")
     @ApiOperation("获取随机专辑")
-    public R<List<AlbumVo>> getRandomAlbum() {
+    public R<List<AlbumSimpleVo>> getRandomAlbum() {
         log.info("获取随机专辑");
-        List<AlbumVo> albums = albumService.getRandomAlbum();
+        List<AlbumSimpleVo> albums = albumService.getRandomAlbum();
         return R.success(albums);
     }
 
@@ -44,9 +45,9 @@ public class AlbumController {
      */
     @GetMapping
     @ApiOperation("根据歌手id查询专辑")
-    public R<List<AlbumVo>> getAlbumBySingerId(@RequestParam("singerId") Long id ){
+    public R<List<AlbumSimpleVo>> getAlbumBySingerId(@RequestParam("singerId") Long id ){
         log.info("根据歌手id查询专辑:{}", id);
-        List<AlbumVo> albumVoList = albumService.getAlbumBySingerId(id);
+        List<AlbumSimpleVo> albumVoList = albumService.getAlbumBySingerId(id);
         return R.success(albumVoList);
     }
 

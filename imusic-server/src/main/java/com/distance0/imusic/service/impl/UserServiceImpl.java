@@ -1,24 +1,31 @@
 package com.distance0.imusic.service.impl;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.distance0.imusic.constant.MessageConstant;
 import com.distance0.imusic.constant.StatusConstant;
 import com.distance0.imusic.context.BaseContext;
+import com.distance0.imusic.dto.UserMiniDto;
 import com.distance0.imusic.dto.UserRegisterDto;
 import com.distance0.imusic.entity.User;
 import com.distance0.imusic.dto.UserLoginDto;
-import com.distance0.imusic.exception.AccountLockedException;
-import com.distance0.imusic.exception.AccountNotFountException;
-import com.distance0.imusic.exception.NameOccupancyException;
-import com.distance0.imusic.exception.PasswordErrorException;
-import com.distance0.imusic.service.UserService;
+import com.distance0.imusic.exception.*;
 import com.distance0.imusic.mapper.UserMapper;
-import com.distance0.imusic.vo.SimpleUserVo;
+import com.distance0.imusic.properties.WeChatProperties;
+import com.distance0.imusic.service.UserService;
+import com.distance0.imusic.utils.HttpClientUtil;
+import com.distance0.imusic.vo.*;
 import org.springframework.beans.BeanUtils;
 import org.springframework.util.DigestUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Random;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * @author: XiangJing
@@ -28,8 +35,31 @@ import java.time.LocalDateTime;
 @Service
 public class UserServiceImpl implements UserService {
 
+    private static final String WX_LOGIN = "https://api.weixin.qq.com/sns/jscode2session";
+
     @Autowired
     private UserMapper userMapper;
+
+    @Autowired
+    private WeChatProperties weChatProperties;
+
+    /**
+     * 根据授权码向微信请求用户openId
+     * @param code
+     * @return
+     */
+    private String getOpenId(String code){
+        HashMap<String, String> map = new HashMap<>();
+        map.put("appid",weChatProperties.getAppid());
+        map.put("secret",weChatProperties.getSecret());
+        map.put("js_code",code);
+        map.put("grant_type","authorization_code");
+        String json = HttpClientUtil.doGet(WX_LOGIN, map);
+
+        JSONObject jsonObject = JSON.parseObject(json);
+        return jsonObject.getString("openid");
+    }
+
 
     /**
      * 用户登录
@@ -38,7 +68,8 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public User login(UserLoginDto dto) {
-        User getUser = userMapper.getUserByAccount(dto.getAccount());
+//        User getUser = userMapper.getUserByAccount(dto.getAccount());
+        User getUser = userMapper.getUser(User.builder().account(dto.getAccount()).build());
         // 先判断用户账号是否存在
         if (getUser == null) {
             throw new AccountNotFountException(MessageConstant.ACCOUNT_NOT_FOUNT);
@@ -57,17 +88,46 @@ public class UserServiceImpl implements UserService {
     }
 
     /**
+     * 小程序 用户登录
+     * @param dto
+     * @return
+     */
+    @Override
+    public User wxLogin(UserMiniDto dto) {
+        String openId = getOpenId(dto.getCode());
+        if(openId == null){
+            throw new LoginFailedException(MessageConstant.LOGIN_FAILED);
+        }
+
+        User user = userMapper.getUserByOpenId(openId);
+        if(user != null){
+            return user;
+        }
+        Random rand = new Random();
+        User build = User.builder()
+                .name("用户"+ rand.nextInt(90000) + 100)
+                .openId(openId)
+                .createTime(LocalDateTime.now())
+                .status(StatusConstant.ENABLE)
+                .build();
+        userMapper.insert(build);
+        return build;
+    }
+
+    /**
      * 用户注册
      * @param dto
      * @return
      */
     @Override
     public void register(UserRegisterDto dto) {
-        User user = userMapper.getUserByName(dto.getName());
+//        User user = userMapper.getUserByName(dto.getName());
+        User user = userMapper.getUser(User.builder().name(dto.getName()).build());
         if(user != null){
             throw new NameOccupancyException(MessageConstant.NAME_OCCUPANCY);
         }
-        User getUser = userMapper.getUserByAccount(dto.getAccount());
+//        User getUser = userMapper.getUserByAccount(dto.getAccount());
+        User getUser = userMapper.getUser(User.builder().account(dto.getAccount()).build());
         if (getUser != null) {
             throw new AccountNotFountException(MessageConstant.ACCOUNT_OCCUPANCY);
         }
@@ -82,7 +142,7 @@ public class UserServiceImpl implements UserService {
                 .sex(3)
                 .createTime(LocalDateTime.now())
                 .build();
-        userMapper.register(build);
+        userMapper.insert(build);
     }
 
     /**
@@ -106,10 +166,29 @@ public class UserServiceImpl implements UserService {
      * @return
      */
     @Override
-    public SimpleUserVo getSimpleUserById(Long id) {
+    public UserSimpleVo getSimpleUserById(Long id) {
         User user = userMapper.getUser(User.builder().id(id).build());
-        SimpleUserVo simpleUserVo = new SimpleUserVo();
+        UserSimpleVo simpleUserVo = new UserSimpleVo();
         BeanUtils.copyProperties(user,simpleUserVo);
         return simpleUserVo;
+    }
+
+    /**
+     * 根据用户id查询收藏
+     * @return
+     */
+    @Override
+    public CollectFormVo getCollectForm() {
+        List<CollectFormVo> collectForm = userMapper.getCollectForm(BaseContext.getContextId());
+        List<MusicFormSimpleVo> musicFormSimpleVos = collectForm.stream()
+                .flatMap(collectFormVo -> collectFormVo.getMusicFormList().stream())
+                .collect(Collectors.toList());
+        List<SingerSimpleVo> singerSimpleVos = collectForm.stream()
+                .flatMap(collectFormVo -> collectFormVo.getSingerList().stream())
+                .collect(Collectors.toList());
+        List<AlbumSimpleVo> albumSimpleVos = collectForm.stream()
+                .flatMap(collectFormVo -> collectFormVo.getAlbumList().stream())
+                .collect(Collectors.toList());
+        return CollectFormVo.builder().musicFormList(musicFormSimpleVos).albumList(albumSimpleVos).singerList(singerSimpleVos).build();
     }
 }

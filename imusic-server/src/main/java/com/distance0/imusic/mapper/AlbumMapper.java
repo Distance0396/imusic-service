@@ -28,7 +28,7 @@ public interface AlbumMapper {
      * @param album
      * @return
      */
-    Album getAlbumByAlbum(Album album);
+    Album select(Album album);
 
 
     /**
@@ -57,4 +57,20 @@ public interface AlbumMapper {
      */
     @Select("select * from album where status = 1 order by RAND() LIMIT 20")
     List<AlbumVo> getRandomAlbum();
+
+    /**
+     * 根据id查询图片
+     * @param id
+     * @return
+     */
+    @Select("select image from album where id = #{id}")
+    String getImageById(Long id);
+
+    /**
+     * 搜索
+     * @param keyword
+     * @return
+     */
+    @Select("select * from album where name like concat('%',#{keyword},'%')")
+    List<Album> dimAlbumByKeyword(String keyword);
 }

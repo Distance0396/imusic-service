@@ -62,19 +62,15 @@ public class MusicServiceImpl implements MusicService {
      */
     @Override
     public void changeStatus(Integer status, List<Long> id) {
-        int newStatus;
-        if (status.equals(StatusConstant.DISABLE)){
-            newStatus = StatusConstant.DISABLE;
-        }else if (status.equals(StatusConstant.ENABLE)){
-            newStatus = StatusConstant.ENABLE;
-        } else {
+
+        if (!status.equals(StatusConstant.DISABLE) && !status.equals(StatusConstant.ENABLE)){
             throw new StatusException(MessageConstant.STATUS_EXCEPTION);
         }
 
         for(Long x : id){
             Music music = new Music();
             music.setId(x);
-            music.setStatus(newStatus);
+            music.setStatus(status);
             musicMapper.update(music);
         }
     }
@@ -86,30 +82,23 @@ public class MusicServiceImpl implements MusicService {
      */
     @Override
     public void save(MusicDto dto) {
-        Singer build = Singer.builder()
-                .name(dto.getSingerName())
-                .build();
-        Singer singer = singerMapper.getSinger(build);
+        Singer singer = singerMapper.getSinger(Singer.builder().name(dto.getSingerName()).build());
 
-        if (singer != null){
-            Album album = Album.builder()
-                    .id(dto.getAlbumId()).build();
-            Album albumByAlbum = albumMapper.getAlbumByAlbum(album);
-
-
-            Music music = Music.builder()
-                    .singerId(singer.getId())
-                    .albumName(albumByAlbum.getName())
-                    .audio(dto.getAudio())
-                    .createTime(LocalDateTime.now())
-                    .status(StatusConstant.ENABLE).build();
-            BeanUtils.copyProperties(dto, music);
-            musicMapper.insert(music);
-            return;
+        if (singer == null){
+            throw new FindNullException(MessageConstant.FIND_SINGER_NULL);
         }
 
-        throw new FindNullException(MessageConstant.FIND_SINGER_NULL);
+        Album albumByAlbum = albumMapper.select(Album.builder().id(dto.getAlbumId()).build());
 
+        Music music = Music.builder()
+                .singerId(singer.getId())
+                .albumName(albumByAlbum.getName())
+                .audio(dto.getAudio())
+                .image(albumByAlbum.getImage())
+                .createTime(LocalDateTime.now())
+                .status(StatusConstant.ENABLE).build();
+        BeanUtils.copyProperties(dto, music);
+        musicMapper.insert(music);
     }
 
     /**
@@ -140,14 +129,7 @@ public class MusicServiceImpl implements MusicService {
         Music music = new Music();
         BeanUtils.copyProperties(dto, music);
 
-        if (dto.getAlbumId() == 0){
-            music.setAlbumId(null);
-            music.setSort(null);
-            music.setAlbumName(null);
-        }else {
-            music.setReleaseTime(null);
-        }
-
+        music.setReleaseTime(LocalDateTime.now());
         musicMapper.update(music);
     }
 

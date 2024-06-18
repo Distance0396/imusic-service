@@ -50,3 +50,7 @@ music:
   alioss:
     endpoint: ${music.alioss.endpoint}
     bucketName: ${music.alioss.bucketName}
+
+  wechat:
+    appid: ${sky.wechat.appid}
+    secret: ${sky.wechat.secret}

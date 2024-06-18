@@ -1,7 +1,7 @@
 package com.distance0.imusic.service;
 
-import com.distance0.imusic.entity.MusicForm;
-import com.distance0.imusic.entity.User;
+import com.distance0.imusic.entity.MusicFormMusic;
+import com.distance0.imusic.vo.MusicFormVo;
 
 import java.util.List;
 
@@ -15,12 +15,32 @@ public interface MusicFormService {
      * 根据用户id查询收藏歌单
      * @return
      */
-    User getMusicFormByUserId();
+//    List<MusicFormVo> getMusicFormByUserId();
 
     /**
      * 根据歌单id查询歌单
      * @param id
      * @return
      */
-    MusicForm getMusicFormById(Long id);
+    MusicFormVo getMusicFormById(Long id);
+
+    /**
+     * 新增歌单
+     * @return
+     */
+    void addMusicForm();
+
+    /**
+     * 添加歌曲至歌单
+     * @param musicFormMusic
+     * @return
+     */
+    void appendMusicForm(MusicFormMusic musicFormMusic);
+
+    /**
+     * 删除歌单歌曲
+     * @param musicFormMusic
+     * @return
+     */
+    void deleteMusic(MusicFormMusic musicFormMusic);
 }
