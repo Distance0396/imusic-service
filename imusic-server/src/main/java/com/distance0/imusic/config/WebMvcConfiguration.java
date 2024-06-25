@@ -71,8 +71,13 @@ public class WebMvcConfiguration extends WebMvcConfigurationSupport {
                 .excludePathPatterns("/user/user/login/wx")
                 .excludePathPatterns("/user/user/register")
                 .excludePathPatterns("/user/singer/**")
+                .excludePathPatterns("/user/album")
                 .excludePathPatterns("/user/album/**")
-                .excludePathPatterns("/user/music-form/{id}");
+                .excludePathPatterns("/user/album")
+                .excludePathPatterns("/user/common/**")
+                .excludePathPatterns("/user/music/**")
+                .excludePathPatterns("/user/music-form/{id}")
+                .excludePathPatterns("/user/singer/**");
 
         registry.addInterceptor(corsInterceptor).addPathPatterns("/**");
 

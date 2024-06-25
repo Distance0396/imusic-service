@@ -3,7 +3,83 @@
 <mapper namespace="com.distance0.imusic.mapper.CollectFormMapper">
 
     <insert id="addCollectForm">
-        insert into collect_form (user_id, music_form_id) VALUES
-            (#{userId},#{musicFormId})
+        insert into collect_form (user_id, music_form_id, singer_id, album_id) VALUES
+            (#{userId},#{musicFormId},#{singerId},#{albumId})
     </insert>
+
+    <delete id="cancel">
+        delete from collect_form where id = #{id}
+    </delete>
+
+    <select id="selectCollectForm" resultType="com.distance0.imusic.entity.CollectForm">
+        select * from collect_form
+            <where>
+                <if test="musicFormId != null and albumId == null and singerId == null">
+                    music_form_id = #{musicFormId}
+                </if>
+                <if test="albumId != null and musicFormId == null and singerId == null">
+                    and album_id = #{albumId}
+                </if>
+                <if test="singerId != null and musicFormId == null and albumId == null">
+                    and singer_id = #{singerId}
+                </if>
+                and user_id = #{userId}
+            </where>
+    </select>
+
+
+    <select id="getSingerById" resultType="String">
+        select name from singer where id = #{asinger_id}
+    </select>
+
+    <select id="getUserById" resultType="String">
+        select name from user where id = #{muser_id}
+    </select>
+
+    <resultMap id="getMusicFormByUserId" type="com.distance0.imusic.vo.CollectFormVo">
+        <collection property="musicFormList" ofType="com.distance0.imusic.vo.MusicFormSimpleVo">
+            <id column="mid" property="id" />
+            <result column="mname" property="name" />
+            <result column="mimage" property="image" />
+            <association column="muser_id" property="architect" select="getUserById"/>
+        </collection>
+        <collection property="singerList"  ofType="com.distance0.imusic.vo.SingerSimpleVo">
+            <id column="sid" property="id" />
+            <result column="sname" property="name" />
+            <result column="simage" property="image" />
+            <result column="scolor" property="color" />
+            <result column="savatar" property="avatar" />
+        </collection>
+        <collection property="albumList" ofType="com.distance0.imusic.vo.AlbumSimpleVo">
+            <id column="aid" property="id" />
+            <result column="aname" property="name" />
+            <result column="aimage" property="image" />
+            <result column="acolor" property="color" />
+            <result column="asinger_id" property="singerId" />
+            <association column="asinger_id" property="singerName" select="getSingerById"/>
+        </collection>
+    </resultMap>
+
+    <select id="getCollectForm" resultMap="getMusicFormByUserId" >
+        select
+            mf.id as mid,
+            mf.name as mname,
+            mf.user_id as muser_id,
+            mf.image as mimage,
+            s.id as sid,
+            s.name as sname,
+            s.image as simage,
+            s.color as scolor,
+            s.avatar as savatar,
+            a.id as aid,
+            a.name as aname,
+            a.image as aimage,
+            a.color as acolor,
+            a.singer_id as asinger_id
+        from collect_form cf
+                 left join singer s on cf.singer_id =  s.id
+                 left join music_form mf on cf.music_form_id =  mf.id
+                 left join album a on cf.album_id =  a.id
+        where cf.user_id = #{id};
+    </select>
 </mapper>

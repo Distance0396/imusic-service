@@ -50,10 +50,4 @@ public interface UserService {
     UserSimpleVo getSimpleUserById(Long id);
 
 
-    /**
-     * 根据用户id查询收藏
-     * @return
-     */
-    CollectFormVo getCollectForm();
-
 }

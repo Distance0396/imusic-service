@@ -1,10 +1,12 @@
 package com.distance0.imusic.service.impl;
 
+import com.distance0.imusic.constant.MessageConstant;
+import com.distance0.imusic.constant.StatusConstant;
 import com.distance0.imusic.context.BaseContext;
-import com.distance0.imusic.entity.Album;
-import com.distance0.imusic.entity.Music;
-import com.distance0.imusic.entity.MusicForm;
-import com.distance0.imusic.entity.MusicFormMusic;
+import com.distance0.imusic.dto.MusicFormDto;
+import com.distance0.imusic.entity.*;
+import com.distance0.imusic.exception.BaseException;
+import com.distance0.imusic.exception.FindNullException;
 import com.distance0.imusic.mapper.*;
 import com.distance0.imusic.service.MusicFormService;
 import com.distance0.imusic.utils.ImagesUtil;
@@ -49,15 +51,6 @@ public class MusicFormServiceImpl implements MusicFormService {
     @Autowired
     private MusicMapper musicMapper;
 
-    /**
-     * 根据用户id查询收藏歌单
-     *
-     * @return
-     */
-//    @Override
-//    public List<MusicFormVo> getMusicFormByUserId() {
-//        return musicFormMapper.getMusicFormByUser(BaseContext.getContextId());
-//    }
 
     /**
      * 根据歌单id查询歌单
@@ -77,14 +70,6 @@ public class MusicFormServiceImpl implements MusicFormService {
                 String imageBySingerId = singerMapper.getImageBySingerId(music.getSingerId());
                 music.setImage(imageBySingerId);
             }
-//            if (music.getAlbumId() != null) {
-//                String musicImageById = albumMapper.getImageById(music.getAlbumId());
-//                music.setImage(musicImageById);
-//            }
-//            else if (music.getSingerId() != null) {
-//                String imageBySingerId = singerMapper.getImageBySingerId(music.getSingerId());
-//                music.setImage(imageBySingerId);
-//            }
             return music;
         }).collect(Collectors.toList());
         musicFormVo.setMusicList(collect);
@@ -97,17 +82,23 @@ public class MusicFormServiceImpl implements MusicFormService {
      * @return
      */
     @Override
-    public void addMusicForm() {
-        Integer musicFormByUser = musicFormMapper.getMusicFormByUser(BaseContext.getContextId());
-        int name = musicFormByUser + 1;
+    public void addMusicForm(Long id) {
+        List<MusicForm> musicFormList = musicFormMapper.getMusicFormByUser(id);
+        int name = musicFormList.size() + 1;
         MusicForm build = MusicForm.builder()
                 .name("我的 #" + name + "歌单")
-                .userId(BaseContext.getContextId())
+                .userId(id)
+                .status(StatusConstant.ENABLE)
                 .createTime(LocalDateTime.now())
                 .updateTime(LocalDateTime.now())
                 .build();
         musicFormMapper.addMusicForm(build);
-        collectFormMapper.addCollectForm(BaseContext.getContextId(), build.getId());
+
+        collectFormMapper.addCollectForm(CollectForm
+                .builder()
+                .userId(BaseContext.getContextId())
+                .musicFormId(build.getId())
+                .build());
     }
 
     /**
@@ -118,13 +109,31 @@ public class MusicFormServiceImpl implements MusicFormService {
      */
     @Override
     public void appendMusicForm(MusicFormMusic musicFormMusic) {
+        /*
+            判断歌单是否为用户自己的歌单
+            不为用户自己的不能添加
+         */
+        MusicForm musicFormByUserIdAndFormId = musicFormMapper.findMusicFormByUserIdAndFormId(musicFormMusic.getMusicFormId(), BaseContext.getContextId());
+        if (musicFormByUserIdAndFormId == null) {
+            throw new BaseException(MessageConstant.NOT_BELONG_MUSIC_FORM);
+        }
+
+        /*
+            判断歌曲是否已存在歌单
+         */
         MusicFormMusic musicFormMusic1 = musicFormMusicMapper.findById(musicFormMusic);
         if (musicFormMusic1 != null) {
             return;
         }
 
+        /*
+            判断歌曲是否存在image存在就设置为歌单的封面
+            没有封面就直接添加
+         */
         Music music = musicMapper.getMusic(Music.builder().id(musicFormMusic.getMusicId()).build());
         if (music.getImage() != null) {
+            musicFormMusicMapper.save(musicFormMusic);
+
             CompletableFuture.supplyAsync(() -> {
                 try {
                     return ImagesUtil.readImages(music.getImage());
@@ -138,7 +147,6 @@ public class MusicFormServiceImpl implements MusicFormService {
                         .image(music.getImage())
                         .color(color)
                         .build());
-                musicFormMusicMapper.save(musicFormMusic);
             }).exceptionally(ex -> {
                 log.info(ex.getMessage());
                 return null;
@@ -157,8 +165,46 @@ public class MusicFormServiceImpl implements MusicFormService {
     @Override
     public void deleteMusic(MusicFormMusic musicFormMusic) {
         MusicFormMusic music = musicFormMusicMapper.findById(musicFormMusic);
-        if (music != null) {
-            musicFormMusicMapper.deleteMusic(musicFormMusic);
+        if (music == null) {
+            throw new FindNullException(MessageConstant.MUSIC_FORM_NOT_FIND_MUSIC);
+        }
+        musicFormMusicMapper.deleteMusic(musicFormMusic);
+
+    }
+
+    /**
+     * 修改歌单
+     * @param dto
+     * @return
+     */
+    @Override
+    public void update(MusicFormDto dto) {
+        /*
+            根据歌单id和用户id查询是否有歌单
+         */
+        MusicForm musicForm = musicFormMapper.findMusicFormByUserIdAndFormId(dto.getId(), BaseContext.getContextId());
+        if (musicForm == null){
+            throw new FindNullException(MessageConstant.FIND_MUSIC_FORM_NULL);
+        }
+        /*
+            先修改歌单
+         */
+        MusicForm musicForm1 = new MusicForm();
+        BeanUtils.copyProperties(dto, musicForm1);
+        musicFormMapper.update(musicForm1);
+
+        /*
+            前端有传输image便读取颜色
+         */
+        if (!dto.getImage().isEmpty()){
+            CompletableFuture.runAsync(() -> {
+                try {
+                    MusicForm build = MusicForm.builder().color(ImagesUtil.readImages(dto.getImage())).build();
+                    musicFormMapper.update(build);
+                } catch (IOException e) {
+                    throw new RuntimeException(MessageConstant.COLOR_READING_ERROR);
+                }
+            });
         }
     }
 }

@@ -23,7 +23,7 @@
                     status = #{status},
                 </if>
                 <if test="releaseTime != null">
-                    release_time = #{releaseTime}
+                    release_time = #{releaseTime},
                 </if>
                 <if test="color != null">
                     color = #{color}

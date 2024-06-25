@@ -2,10 +2,10 @@ package com.distance0.imusic.controller.admin;
 
 import com.distance0.imusic.dto.MusicPageDto;
 import com.distance0.imusic.dto.MusicDto;
-import com.distance0.imusic.entity.Music;
 import com.distance0.imusic.result.PageResult;
 import com.distance0.imusic.result.R;
 import com.distance0.imusic.service.MusicService;
+import com.distance0.imusic.vo.MusicLyricVo;
 import com.distance0.imusic.vo.MusicVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;

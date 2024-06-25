@@ -22,7 +22,7 @@ public interface MusicFormMusicMapper {
     void save(MusicFormMusic musicFormMusic);
 
     /**
-     * 查询
+     * 查询用户歌单歌曲
      * @param musicFormMusic
      * @return
      */

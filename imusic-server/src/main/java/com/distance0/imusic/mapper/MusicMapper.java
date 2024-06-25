@@ -36,10 +36,16 @@ public interface MusicMapper {
     Page<Music> pageQuery(Music Music);
 
     /**
-     * 修改状态
+     * 修改
      * @param music
      */
     void update(Music music);
+
+    /**
+     * 批量修改音乐封面
+     * @param music
+     */
+    void updateMusicList(List<Music> music);
 
     /**
      * 获取音乐数组

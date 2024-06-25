@@ -3,7 +3,6 @@ package com.distance0.imusic.controller;
 import com.distance0.imusic.constant.MessageConstant;
 import com.distance0.imusic.entity.Album;
 import com.distance0.imusic.entity.Music;
-import com.distance0.imusic.entity.Singer;
 import com.distance0.imusic.mapper.AlbumMapper;
 import com.distance0.imusic.mapper.MusicFormMapper;
 import com.distance0.imusic.mapper.MusicMapper;
@@ -26,17 +25,14 @@ import java.util.stream.Collectors;
 
 /**
  * @author: XiangJing
- * @date: 2024/5/19 下午9:54
+ * @date: 2024/6/20 下午8:32
  * @description:
  */
 @RestController
-//@RequestMapping("/common")
+@RequestMapping("/common")
 @Api(tags = "通用接口")
 @Slf4j
 public class CommonController {
-
-    @Autowired
-    private AliOssUtil aliOssUtil;
 
     @Autowired
     private MusicFormMapper musicFormMapper;
@@ -50,9 +46,11 @@ public class CommonController {
     @Autowired
     private MusicMapper musicMapper;
 
+    @Autowired
+    private AliOssUtil aliOssUtil;
 
 
-    @PostMapping("/common/upload")
+    @PostMapping("/upload")
     @ApiOperation("文件上传")
     public R<String> upload(@RequestPart("file") MultipartFile file){
         log.info("文件上传：{}",file);
@@ -71,7 +69,7 @@ public class CommonController {
         return R.error(MessageConstant.UPLOAD_FAILED);
     }
 
-    @PostMapping("/common/upload/audio")
+    @PostMapping("/upload/audio")
     @ApiOperation("音频上传")
     public R<String> uploadAudio(@RequestPart("file") MultipartFile file){
         log.info("文件上传：{}",file);
@@ -90,12 +88,13 @@ public class CommonController {
         return R.error(MessageConstant.UPLOAD_FAILED);
     }
 
+
     /**
      * 搜索
      * @param keyword
      * @return
      */
-    @GetMapping("/user/common/search")
+    @GetMapping("/search")
     public R<SearchVo> search(@RequestParam("keyword") String keyword){
         log.info("关键字搜索：{}",keyword);
 

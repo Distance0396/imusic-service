@@ -39,7 +39,7 @@ public class adminController {
      * 获取用户信息
      * @return
      */
-    @GetMapping("info")
+    @GetMapping("/info")
     public R info() {
         Map<String, Object> map = new HashMap<>();
         map.put("roles","[admin]");
@@ -51,7 +51,7 @@ public class adminController {
      * 退出
      * @return
      */
-    @PostMapping("logout")
+    @PostMapping("/logout")
     public R logout(){
         return R.success();
     }

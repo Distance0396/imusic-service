@@ -10,7 +10,7 @@
             (#{item.musicFormId}, #{item.musicId})
         </foreach>
     </insert>
-<!--    查询-->
+<!--    查询歌单-->
     <select id="findById" resultType="com.distance0.imusic.entity.MusicFormMusic">
         select * from music_form_music where music_form_id = #{musicFormId} and music_id = #{musicId}
     </select>

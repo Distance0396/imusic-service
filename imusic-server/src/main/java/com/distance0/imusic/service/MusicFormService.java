@@ -1,5 +1,6 @@
 package com.distance0.imusic.service;
 
+import com.distance0.imusic.dto.MusicFormDto;
 import com.distance0.imusic.entity.MusicFormMusic;
 import com.distance0.imusic.vo.MusicFormVo;
 
@@ -28,7 +29,7 @@ public interface MusicFormService {
      * 新增歌单
      * @return
      */
-    void addMusicForm();
+    void addMusicForm(Long id);
 
     /**
      * 添加歌曲至歌单
@@ -43,4 +44,11 @@ public interface MusicFormService {
      * @return
      */
     void deleteMusic(MusicFormMusic musicFormMusic);
+
+    /**
+     * 修改歌单
+     * @param dto
+     * @return
+     */
+    void update(MusicFormDto dto);
 }

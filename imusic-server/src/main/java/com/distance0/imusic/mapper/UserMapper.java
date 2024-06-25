@@ -55,9 +55,4 @@ public interface UserMapper {
     @Select("select * from user where open_id = #{openId}")
     User getUserByOpenId(String openId);
 
-    /**
-     * 根据用户id查询收藏
-     * @return
-     */
-    List<CollectFormVo> getCollectForm(Long id);
 }

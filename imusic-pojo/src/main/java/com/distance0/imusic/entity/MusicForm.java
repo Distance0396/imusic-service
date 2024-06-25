@@ -27,6 +27,7 @@ public class MusicForm implements Serializable {
     private Integer count;
     private String description;
     private String color;
+    private Integer status;
     private LocalDateTime createTime;
     private LocalDateTime updateTime;
     private List<MusicImageVo> musicList;

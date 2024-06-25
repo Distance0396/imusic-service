@@ -22,6 +22,8 @@ public class AlbumPageVo implements Serializable {
     private String name;
     private String singerName;
     private String image;
+    private String color;
+    private Long singerId;
     private String description;
     private Integer status;
     private LocalDateTime releaseTime;

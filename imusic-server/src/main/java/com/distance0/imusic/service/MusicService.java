@@ -2,8 +2,8 @@ package com.distance0.imusic.service;
 
 import com.distance0.imusic.dto.MusicPageDto;
 import com.distance0.imusic.dto.MusicDto;
-import com.distance0.imusic.entity.Music;
 import com.distance0.imusic.result.PageResult;
+import com.distance0.imusic.vo.MusicLyricVo;
 import com.distance0.imusic.vo.MusicVo;
 
 import java.util.List;
@@ -49,4 +49,11 @@ public interface MusicService {
      * @return
      */
     MusicVo findMusicById(Long id);
+
+    /**
+     * 根据音乐id查询歌词
+     * @param id
+     * @return
+     */
+    MusicLyricVo getLyric(Long id);
 }

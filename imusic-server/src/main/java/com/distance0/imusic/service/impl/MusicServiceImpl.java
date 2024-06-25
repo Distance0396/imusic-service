@@ -14,6 +14,7 @@ import com.distance0.imusic.mapper.MusicMapper;
 import com.distance0.imusic.mapper.SingerMapper;
 import com.distance0.imusic.result.PageResult;
 import com.distance0.imusic.service.MusicService;
+import com.distance0.imusic.vo.MusicLyricVo;
 import com.distance0.imusic.vo.MusicVo;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
@@ -133,4 +134,20 @@ public class MusicServiceImpl implements MusicService {
         musicMapper.update(music);
     }
 
+    /**
+     * 根据音乐id查询歌词
+     * @param id
+     * @return
+     */
+    @Override
+    public MusicLyricVo getLyric(Long id) {
+        Music music = musicMapper.getMusic(Music.builder().id(id).build());
+        if (music == null){
+            throw new FindNullException(MessageConstant.MUSIC_NOT_FIND);
+        }
+
+        MusicLyricVo musicLyricVo = new MusicLyricVo();
+        BeanUtils.copyProperties(music, musicLyricVo);
+        return musicLyricVo;
+    }
 }

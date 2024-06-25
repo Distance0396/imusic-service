@@ -18,15 +18,15 @@ import java.util.List;
 @Mapper
 public interface MusicFormMapper {
     /**
-     * 根据用户id查询收藏歌单数量
+     * 根据用户id查询收藏歌单
      * @param id
      * @return
      */
-    @Select("select count(music_form_id) from collect_form where user_id = #{id}")
-    Integer getMusicFormByUser(Long id);
+    @Select("select * from music_form where user_id = #{id}")
+    List<MusicForm> getMusicFormByUser(Long id);
 
     /**
-     * 根据歌单id查询歌单
+     * 根据歌单id查询歌单包含歌曲
      * @param id
      * @return
      */
@@ -50,4 +50,12 @@ public interface MusicFormMapper {
      * @param musicForm
      */
     void update(MusicForm musicForm);
+
+    /**
+     * 根据歌单id和用户id查询
+     * @param id
+     * @return
+     */
+    @Select("select * from music_form where user_id = #{userId} and id = #{id}")
+    MusicForm findMusicFormByUserIdAndFormId(Long id, Long userId);
 }

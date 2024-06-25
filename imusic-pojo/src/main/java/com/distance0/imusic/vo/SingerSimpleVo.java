@@ -21,6 +21,7 @@ public class SingerSimpleVo implements Serializable {
     private String name;
     private String avatar;
     private String image;
+    private String language;
     private String color;
     private static final long serialVersionUID = 1L;
 }

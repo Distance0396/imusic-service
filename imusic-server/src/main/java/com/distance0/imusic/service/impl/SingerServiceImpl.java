@@ -81,7 +81,7 @@ public class SingerServiceImpl implements SingerService {
         try {
             build.setColor(ImagesUtil.readImages(dto.getImage()));
         } catch (IOException e) {
-            throw new RuntimeException("图片颜色获取错误",e);
+            throw new RuntimeException(MessageConstant.COLOR_READING_ERROR);
         }
         singerMapper.insert(build);
     }

@@ -16,9 +16,14 @@ public class MessageConstant {
     public static final String STATUS_EXCEPTION = "状态异常";
 
     public static final String FIND_NULL = "找不到数据";
-    public static final String FIND_SINGER_NULL = "没有这个歌手";
+    public static final String FIND_MUSIC_FORM_NULL = "找不到此歌单";
+    public static final String FIND_SINGER_NULL = "找不到此歌手";
     public static final String MUSIC_NOT_FIND = "找不到此音乐";
+    public static final String COLOR_READING_ERROR = "颜色读取错误";
+    public static final String NOT_BELONG_MUSIC_FORM = "该歌单不属于您";
+    public static final String MUSIC_FORM_NOT_FIND_MUSIC = "歌单没有该歌曲";
 
+    public static final String ALREADY_EXIST = "已收藏";
     public static final String UNKNOWN_ERROR = "未知错误";
 
     public static final String UPLOAD_FAILED = "文件上传失败";

@@ -106,7 +106,7 @@
                 <if test="name != null">
                      name = #{name},
                 </if>
-                <if test="albumId ！= null and albumId != 0">
+                <if test="albumId != null and albumId != 0">
                      album_id = #{albumId},
                 </if>
                 <if test="singerId != null">
@@ -139,7 +139,58 @@
             </set>
         where id = #{id}
     </update>
-
+<!--    批量修改-->
+    <update id="updateMusicList">
+        update music
+        <trim prefix="set" suffixOverrides=",">
+            <trim prefix="album_name=case" suffix="end,">
+                <foreach collection="list" item="music" index="index">
+                    <if test="music.albumName != null and music.albumName != ''">
+                        when  id = #{music.id} then #{music.albumName}
+                    </if>
+                </foreach>
+            </trim>
+            <trim prefix="singer_name=case" suffix="end,">
+                <foreach collection="list" item="music" index="index">
+                    <if test="music.singerName != null and music.singerName != ''">
+                        when  id = #{music.id} then #{music.singerName}
+                    </if>
+                </foreach>
+            </trim>
+            <trim prefix="album_id=case" suffix="end,">
+                <foreach collection="list" item="music" index="index">
+                    <if test="music.albumId != null and music.albumId != ''">
+                        when  id = #{music.id} then #{music.albumId}
+                    </if>
+                </foreach>
+            </trim>
+            <trim prefix="singer_id=case" suffix="end,">
+                <foreach collection="list" item="music" index="index">
+                    <if test="music.singerId != null and music.singerId != ''">
+                        when  id = #{music.id} then #{music.singerId}
+                    </if>
+                </foreach>
+            </trim>
+            <trim prefix="status=case" suffix="end,">
+                <foreach collection="list" item="music" index="index">
+                    <if test="music.status != null and music.status != ''">
+                        when  id = #{music.id} then #{music.status}
+                    </if>
+                </foreach>
+            </trim>
+            <trim prefix="image=case" suffix="end,">
+                <foreach collection="list" item="music" index="index">
+                    <if test="music.image != null and music.image != ''">
+                        when  id = #{music.id} then #{music.image}
+                    </if>
+                </foreach>
+            </trim>
+        </trim>
+        where
+        <foreach collection="list" separator="or" item="music" index="index" >
+            id = #{music.id}
+        </foreach>
+    </update>
 
 
 </mapper>

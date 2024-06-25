@@ -33,7 +33,7 @@
     </select>
 <!--    歌手分页查询-->
     <select id="pageQuery" resultType="com.distance0.imusic.vo.SingerVo">
-        select id, name, avatar, type, status, description, create_time, image, language from singer
+        select id, name, avatar, type, status, description, create_time, image, language, color from singer
             <where>
                 <if test="name != null">
                     name like concat('%',#{name},'%')

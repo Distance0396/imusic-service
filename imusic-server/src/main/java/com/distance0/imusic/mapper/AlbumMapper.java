@@ -55,7 +55,7 @@ public interface AlbumMapper {
      * 获取随机专辑
      * @return
      */
-    @Select("select * from album where status = 1 order by RAND() LIMIT 20")
+    @Select("select * from album where status = 1 order by RAND() LIMIT 10")
     List<AlbumVo> getRandomAlbum();
 
     /**

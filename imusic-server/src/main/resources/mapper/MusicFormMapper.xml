@@ -101,8 +101,8 @@
 
     <!--    新增歌单-->
     <insert id="addMusicForm" useGeneratedKeys="true" keyProperty="id">
-        insert into music_form (id, name, user_id, image, count, description, create_time, update_time) VALUES
-            (#{id},#{name},#{userId},#{image},#{count},#{description},#{createTime},#{updateTime})
+        insert into music_form (id, name, user_id, image, count, description, create_time, update_time,status) VALUES
+            (#{id},#{name},#{userId},#{image},#{count},#{description},#{createTime},#{updateTime},#{status})
     </insert>
 
     <!--    修改歌单-->
@@ -131,7 +131,10 @@
                 create_time = #{createTime},
             </if>
             <if test="color != null">
-                color = #{color}
+                color = #{color},
+            </if>
+            <if test="status != null">
+                status = #{status}
             </if>
         </set>
         where id = #{id}

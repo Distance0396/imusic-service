@@ -12,7 +12,7 @@ import javax.annotation.PostConstruct;
  */
 @Configuration
 @Slf4j
-public class DruidConfig {
+public class DruidConfiguration {
     @PostConstruct
     public void setProperties(){
         System.setProperty("druid.mysql.usePingMethod","false");

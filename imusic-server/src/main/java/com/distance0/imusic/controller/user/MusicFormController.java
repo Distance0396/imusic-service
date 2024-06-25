@@ -1,6 +1,8 @@
 package com.distance0.imusic.controller.user;
 
 import com.distance0.imusic.context.BaseContext;
+import com.distance0.imusic.dto.MusicFormDto;
+import com.distance0.imusic.entity.MusicForm;
 import com.distance0.imusic.entity.MusicFormMusic;
 import com.distance0.imusic.result.R;
 import com.distance0.imusic.service.MusicFormService;
@@ -23,6 +25,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/user/music-form")
 public class MusicFormController {
+
     @Autowired
     private MusicFormService musicFormService;
 
@@ -57,9 +60,9 @@ public class MusicFormController {
      */
     @PostMapping("/save")
     @ApiOperation("新增歌单")
-    public R<MusicFormVo> addMusicForm(){
-        log.info("{} 新增歌单", BaseContext.getContextId());
-        musicFormService.addMusicForm();
+    public R addMusicForm(){
+        log.info("新增歌单: {}", BaseContext.getContextId());
+        musicFormService.addMusicForm(BaseContext.getContextId());
         return R.success();
     }
 
@@ -86,6 +89,19 @@ public class MusicFormController {
     public R deleteMusic(@RequestBody MusicFormMusic musicFormMusic) {
         log.info("删除歌单歌曲:{}",musicFormMusic);
         musicFormService.deleteMusic(musicFormMusic);
+        return R.success();
+    }
+
+    /**
+     * 修改歌单
+     * @param dto
+     * @return
+     */
+    @PutMapping
+    @ApiOperation("修改歌单")
+    public R updateMusicForm(@RequestBody MusicFormDto dto){
+        log.info("修改歌单：{}", dto);
+        musicFormService.update(dto);
         return R.success();
     }
 }

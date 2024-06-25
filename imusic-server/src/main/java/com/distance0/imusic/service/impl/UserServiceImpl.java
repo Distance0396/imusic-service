@@ -43,23 +43,6 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private WeChatProperties weChatProperties;
 
-    /**
-     * 根据授权码向微信请求用户openId
-     * @param code
-     * @return
-     */
-    private String getOpenId(String code){
-        HashMap<String, String> map = new HashMap<>();
-        map.put("appid",weChatProperties.getAppid());
-        map.put("secret",weChatProperties.getSecret());
-        map.put("js_code",code);
-        map.put("grant_type","authorization_code");
-        String json = HttpClientUtil.doGet(WX_LOGIN, map);
-
-        JSONObject jsonObject = JSON.parseObject(json);
-        return jsonObject.getString("openid");
-    }
-
 
     /**
      * 用户登录
@@ -88,6 +71,23 @@ public class UserServiceImpl implements UserService {
     }
 
     /**
+     * 根据授权码向微信请求用户openId
+     * @param code
+     * @return
+     */
+    private String getOpenId(String code){
+        HashMap<String, String> map = new HashMap<>();
+        map.put("appid",weChatProperties.getAppid());
+        map.put("secret",weChatProperties.getSecret());
+        map.put("js_code",code);
+        map.put("grant_type","authorization_code");
+        String json = HttpClientUtil.doGet(WX_LOGIN, map);
+
+        JSONObject jsonObject = JSON.parseObject(json);
+        return jsonObject.getString("openid");
+    }
+
+    /**
      * 小程序 用户登录
      * @param dto
      * @return
@@ -96,7 +96,18 @@ public class UserServiceImpl implements UserService {
     public User wxLogin(UserMiniDto dto) {
         String openId = getOpenId(dto.getCode());
         if(openId == null){
-            throw new LoginFailedException(MessageConstant.LOGIN_FAILED);
+            HashMap<String, String> map = new HashMap<>();
+            map.put("appid","wx04f02e2acebb5a48");
+            map.put("secret","50719df90b7807d61451714f211a2af9");
+            map.put("js_code",dto.getCode());
+            map.put("grant_type","authorization_code");
+            String json = HttpClientUtil.doGet(WX_LOGIN, map);
+
+            JSONObject jsonObject = JSON.parseObject(json);
+            openId = jsonObject.getString("openid");
+            if (openId == null){
+                throw new LoginFailedException(MessageConstant.LOGIN_FAILED);
+            }
         }
 
         User user = userMapper.getUserByOpenId(openId);
@@ -173,22 +184,4 @@ public class UserServiceImpl implements UserService {
         return simpleUserVo;
     }
 
-    /**
-     * 根据用户id查询收藏
-     * @return
-     */
-    @Override
-    public CollectFormVo getCollectForm() {
-        List<CollectFormVo> collectForm = userMapper.getCollectForm(BaseContext.getContextId());
-        List<MusicFormSimpleVo> musicFormSimpleVos = collectForm.stream()
-                .flatMap(collectFormVo -> collectFormVo.getMusicFormList().stream())
-                .collect(Collectors.toList());
-        List<SingerSimpleVo> singerSimpleVos = collectForm.stream()
-                .flatMap(collectFormVo -> collectFormVo.getSingerList().stream())
-                .collect(Collectors.toList());
-        List<AlbumSimpleVo> albumSimpleVos = collectForm.stream()
-                .flatMap(collectFormVo -> collectFormVo.getAlbumList().stream())
-                .collect(Collectors.toList());
-        return CollectFormVo.builder().musicFormList(musicFormSimpleVos).albumList(albumSimpleVos).singerList(singerSimpleVos).build();
-    }
 }

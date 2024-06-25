@@ -41,17 +41,6 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    /**
-     * 根据用户id查询收藏
-     * @return
-     */
-    @ApiOperation("根据用户id查询收藏")
-    @GetMapping("/collectForm")
-    public R<CollectFormVo> getCollectForm(){
-        log.info("根据用户id查询收藏: {}", BaseContext.getContextId());
-        CollectFormVo collectForm = userService.getCollectForm();
-        return R.success(collectForm);
-    }
 
     /**
      * 获取用户信息

@@ -5,6 +5,7 @@ import com.distance0.imusic.constant.MessageConstant;
 import com.distance0.imusic.constant.StatusConstant;
 import com.distance0.imusic.dto.AlbumPageDto;
 import com.distance0.imusic.dto.AlbumDto;
+import com.distance0.imusic.dto.SingerPageDto;
 import com.distance0.imusic.entity.Album;
 import com.distance0.imusic.entity.Music;
 import com.distance0.imusic.entity.Singer;
@@ -17,10 +18,7 @@ import com.distance0.imusic.mapper.SingerMapper;
 import com.distance0.imusic.result.PageResult;
 import com.distance0.imusic.service.AlbumService;
 import com.distance0.imusic.utils.ImagesUtil;
-import com.distance0.imusic.vo.AlbumSimpleVo;
-import com.distance0.imusic.vo.AlbumVo;
-import com.distance0.imusic.vo.MusicImageVo;
-import com.distance0.imusic.vo.MusicVo;
+import com.distance0.imusic.vo.*;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import org.slf4j.Logger;
@@ -33,6 +31,7 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 /**
@@ -59,16 +58,18 @@ public class AlbumServiceImpl implements AlbumService {
     @Override
     public PageResult page(AlbumPageDto dto) {
         PageHelper.startPage(dto.getPage(), dto.getPageSize());
-        // 使用歌手名称查出id
 
+        // 使用歌手名称查出id
         Album album = Album.builder()
                 .name(dto.getName())
                 .status(dto.getStatus())
                 .build();
 
         if (!dto.getSingerName().isEmpty()){
-            Singer build = Singer.builder()
-                    .name(dto.getSingerName()).build();
+            Singer build = Singer
+                    .builder()
+                    .name(dto.getSingerName())
+                    .build();
             Singer singer = singerMapper.getSinger(build);
             if (singer == null){
                 throw new FindNullException(MessageConstant.FIND_SINGER_NULL);
@@ -78,7 +79,14 @@ public class AlbumServiceImpl implements AlbumService {
 
         Page<Album> albums = albumMapper.pageQuery(album);
 
-        return new PageResult(albums.getTotal(), albums.getResult());
+        List<AlbumPageVo> collect = albums.stream().map(a -> {
+            String singerName = singerMapper.getSingerName(a.getSingerId());
+            AlbumPageVo build = AlbumPageVo.builder().singerName(singerName).build();
+            BeanUtils.copyProperties(a, build);
+            return build;
+        }).collect(Collectors.toList());
+
+        return new PageResult(albums.getTotal(), collect);
     }
 
     /**
@@ -185,13 +193,35 @@ public class AlbumServiceImpl implements AlbumService {
      */
     @Override
     public void update(AlbumDto dto) {
-        if (dto.getId() != null){
-            Album album = new Album();
-            BeanUtils.copyProperties(dto, album);
-            albumMapper.update(album);
-            return;
+        String image = dto.getImage();
+        /*
+            专辑是否存在
+         */
+        Album album = albumMapper.select(Album.builder().id(dto.getId()).build());
+        if (album == null){
+            throw new UnknownErrorException(MessageConstant.UNKNOWN_ERROR);
         }
-        throw new UnknownErrorException(MessageConstant.UNKNOWN_ERROR);
+
+        /*
+            异步读取颜色后添加
+         */
+        CompletableFuture.runAsync(() -> {
+            try {
+                Album build = Album.builder().color(ImagesUtil.readImages(image)).build();
+                BeanUtils.copyProperties(dto, build);
+                albumMapper.update(build);
+            } catch (IOException e) {
+                throw new RuntimeException(MessageConstant.COLOR_READING_ERROR);
+            }
+        });
+
+        /*
+            修改专辑中歌曲的image
+         */
+        List<Music> musicList = musicMapper.getMusicList(Music.builder().albumId(dto.getId()).build());
+        musicList.forEach(x -> x.setImage(image));
+        musicMapper.updateMusicList(musicList);
+
     }
 
     /**

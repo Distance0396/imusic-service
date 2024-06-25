@@ -34,10 +34,10 @@ public class SingerController {
      * 获取歌手数组
      * @return
      */
-    @GetMapping("")
-    @ApiOperation("获取歌手数组")
+    @GetMapping("/list")
+    @ApiOperation("获取所有歌手")
     public R<List<SingerSimpleVo>> getSingerList(){
-        log.info("探索页面");
+        log.info("获取所有歌手");
         List<SingerSimpleVo> singerList = singerService.getSingerList();
         return R.success(singerList);
     }
