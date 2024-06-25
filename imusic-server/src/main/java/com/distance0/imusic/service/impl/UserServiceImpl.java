@@ -157,22 +157,19 @@ public class UserServiceImpl implements UserService {
     }
 
     /**
-     * 获取用户信息
+     * 获取用户自身信息
      * @return
      */
     @Override
     public User getUserInfo() {
         Long contextId = BaseContext.getContextId();
-        User build = User.builder()
-                .id(contextId)
-                .build();
-        build = userMapper.getUser(build);
-        build.setPassword("你猜我猜猜");
-        return build;
+        User user = userMapper.getUser(User.builder().id(contextId).build());
+        user.setPassword("你猜我猜猜");
+        return user;
     }
 
     /**
-     * 根据id查询简单用户
+     * 根据id查询用户
      * @param id
      * @return
      */
@@ -182,6 +179,19 @@ public class UserServiceImpl implements UserService {
         UserSimpleVo simpleUserVo = new UserSimpleVo();
         BeanUtils.copyProperties(user,simpleUserVo);
         return simpleUserVo;
+    }
+
+    /**
+     * 修改用户信息
+     * @param user
+     * @return
+     */
+    @Override
+    public void update(User user) {
+        if (userMapper.getUser(user) == null){
+            throw new FindNullException(MessageConstant.NOT_FIND_USER);
+        }
+        userMapper.update(user);
     }
 
 }

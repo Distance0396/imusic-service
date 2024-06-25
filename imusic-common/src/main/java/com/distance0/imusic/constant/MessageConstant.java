@@ -12,6 +12,8 @@ public class MessageConstant {
     public static final String NAME_OCCUPANCY = "昵称被占用";
     public static final String ACCOUNT_OCCUPANCY = "账号被占用";
 
+    public static final String NOT_FIND_USER = "该用户不存在";
+
     public static final String SINGER_NAME_OCCUPANCY = "歌手名已被占用";
     public static final String STATUS_EXCEPTION = "状态异常";
 

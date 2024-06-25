@@ -1,4 +1,4 @@
-package com.sckj.result;
+package com.distance0.imusic.result;
 
 import lombok.Data;
 

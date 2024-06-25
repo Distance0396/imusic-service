@@ -43,7 +43,7 @@ public class UserController {
 
 
     /**
-     * 获取用户信息
+     * 获取用户自身信息
      * @return
      */
     @ApiOperation("获取用户信息")
@@ -59,7 +59,7 @@ public class UserController {
      * @param dto
      * @return
      */
-    @ApiOperation("用户登录返回token")
+    @ApiOperation("小程序 用户登录")
     @PostMapping("/login/wx")
     public R<UserMiniLoginVo> login(@RequestBody UserMiniDto dto){
         log.info("授权码:{}", dto);
@@ -86,7 +86,7 @@ public class UserController {
      * @param dto
      * @return
      */
-    @ApiOperation("用户登陆")
+    @ApiOperation("网页 用户登陆")
     @PostMapping("/login")
     public R login(@RequestBody UserLoginDto dto) {
         log.info("用户登录：{}", dto);
@@ -129,12 +129,25 @@ public class UserController {
      * @return
      */
     @GetMapping
-    @ApiOperation("根据id查询简单用户")
+    @ApiOperation("根据id查询用户")
     public R<UserSimpleVo> getSimpleUserById(@RequestParam("id") Long id) {
-        log.info("根据id查询简单用户:{}",id);
+        log.info("根据id查询用户:{}",id);
         UserSimpleVo simpleUserVo = userService.getSimpleUserById(id);
         return R.success(simpleUserVo);
     }
 
+
+    /**
+     * 修改用户信息
+     * @param user
+     * @return
+     */
+    @PutMapping
+    @ApiOperation("修改用户信息")
+    public R update(@RequestBody User user) {
+        log.info("修改用户信息：{}", user);
+        userService.update(user);
+        return R.success();
+    }
 
 }

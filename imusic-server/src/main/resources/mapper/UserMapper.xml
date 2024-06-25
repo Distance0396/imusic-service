@@ -7,7 +7,6 @@
              (#{name},#{account},#{password},#{phone},#{avatar},#{status},#{email},#{sex},#{createTime},#{openId})
     </insert>
 
-
     <select id="getUser" resultType="com.distance0.imusic.entity.User">
         select id, name, account, password, phone, avatar, email, sex, create_time from user
         <where>
@@ -39,5 +38,36 @@
             </if>
         </where>
     </select>
+
+    <update id="update">
+        update user
+        <set>
+            <if test="name != null">
+                name = #{name}
+            </if>
+            <if test="password != null">
+                and password = #{password}
+            </if>
+            <if test="name != null">
+                and account = #{account}
+            </if>
+            <if test="phone != null">
+                and phone = #{phone}
+            </if>
+            <if test="avatar != null">
+                and avatar = #{avatar}
+            </if>
+            <if test="status != null">
+                and status = #{status}
+            </if>
+            <if test="sex != null">
+                and sex = #{sex}
+            </if>
+            <if test="email != null">
+                and email = #{email}
+            </if>
+        </set>
+        where id = #{id}
+    </update>
 
 </mapper>

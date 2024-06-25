@@ -55,4 +55,10 @@ public interface UserMapper {
     @Select("select * from user where open_id = #{openId}")
     User getUserByOpenId(String openId);
 
+    /**
+     * 修改用户信息
+     * @param user
+     * @return
+     */
+    void update(User user);
 }

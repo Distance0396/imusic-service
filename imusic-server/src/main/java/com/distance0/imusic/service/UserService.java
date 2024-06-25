@@ -50,4 +50,10 @@ public interface UserService {
     UserSimpleVo getSimpleUserById(Long id);
 
 
+    /**
+     * 修改用户信息
+     * @param user
+     * @return
+     */
+    void update(User user);
 }

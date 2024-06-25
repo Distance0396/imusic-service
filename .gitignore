@@ -38,3 +38,5 @@ build/
 
 ### Mac OS ###
 .DS_Store
+
+imusic-server/src/main/resources/*.yaml
