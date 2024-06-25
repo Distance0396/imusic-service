@@ -40,3 +40,4 @@ build/
 .DS_Store
 
 imusic-server/src/main/resources/*.yaml
+imusic-server/src/main/resources/application-dev.yaml
